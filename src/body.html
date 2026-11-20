@@ -1,0 +1,204 @@
+<body class="locked">
+<div id="intro" aria-hidden="true">
+  <div class="glow"></div>
+  <div class="stage">
+    <div class="book3d" id="book3d">
+      <div class="cover-back"></div>
+      <div class="half left"><div class="pagetext">
+        <div class="ttl">Chapter One</div><div class="orn">✦ ✦ ✦</div>
+        <span class="dropcap">I</span>t was a quiet hour in the library, the kind where the dust hangs gold in the light and every spine seems to lean, just slightly, toward the reader.
+        <div class="ln"></div><div class="ln" style="width:86%"></div><div class="ln"></div><div class="ln" style="width:70%"></div><div class="ln"></div><div class="ln" style="width:92%"></div>
+      </div><div class="pagenum">1</div></div>
+      <div class="half right"><div class="pagetext" style="text-align:center;padding-top:22%">
+        <div style="font-size:3em;color:var(--terra)">g</div>
+        <div class="ttl" style="margin-top:.3em">Goodreads</div>
+        <div style="letter-spacing:.3em;font-size:.8em;text-transform:uppercase">Your library, reimagined</div>
+      </div></div>
+      <div id="leaves"></div>
+      <div class="spine-shadow"></div>
+    </div>
+    <div class="intro-word">Find your next <em>great read</em></div>
+    <div class="intro-sub">Opening your library</div>
+  </div>
+  <button class="skip" id="skipIntro">Skip intro ↵</button>
+</div>
+
+<div class="decor" aria-hidden="true">
+  <span data-speed="-0.25" style="left:-30px;top:120px">“</span>
+  <span data-speed="0.18" style="right:2%;top:900px;font-size:240px">&amp;</span>
+  <span data-speed="-0.12" style="left:6%;top:1500px;font-size:220px">”</span>
+  <svg class="sprig" data-speed="0.3" style="right:8%;top:220px" viewBox="0 0 100 100"><path d="M10 90 C40 60 60 30 90 10 M30 70 C20 60 18 50 22 40 M30 70 C42 68 52 62 58 54 M50 50 C40 42 38 32 42 22 M50 50 C62 50 70 44 76 36 M68 32 C62 24 62 16 66 8" stroke="#755151" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>
+  <svg class="sprig" data-speed="-0.2" style="left:2%;top:760px" viewBox="0 0 100 100"><path d="M10 90 C40 60 60 30 90 10 M30 70 C20 60 18 50 22 40 M30 70 C42 68 52 62 58 54 M50 50 C40 42 38 32 42 22 M50 50 C62 50 70 44 76 36" stroke="#44422D" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>
+</div>
+
+<div class="app" id="app">
+  <nav class="top">
+    <div class="wordmark"><div class="mk">g</div><span class="txt">Goodreads</span></div>
+    <label class="search">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input placeholder="Search books, authors, genres…" aria-label="Search" />
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg>
+    </label>
+    <div class="navbtns">
+      <button class="navbtn" data-toast="My Books"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 5h7a3 3 0 0 1 3 3v12a2 2 0 0 0-2-2H2zM22 5h-7a3 3 0 0 0-3 3v12a2 2 0 0 1 2-2h8z"/></svg><span>My Books</span></button>
+      <button class="navbtn" data-toast="Discover"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/></svg><span>Discover</span></button>
+      <button class="navbtn" id="navJam"><span class="pagebars" style="color:var(--mauve)"><i></i><i></i><i></i></span><span>Book Jam</span></button>
+      <div class="avatar me" style="--s:42px;margin-left:8px">MT</div>
+    </div>
+  </nav>
+
+  <div class="grid">
+    <div class="card cr">
+      <div>
+        <span class="eyebrow">Currently reading</span>
+        <h1>The Women</h1>
+        <div class="serif" style="font-size:18px;color:var(--brown-2)">A Novel</div>
+        <div class="meta">by Kristin Hannah<br/>Historical Fiction · 400 pages</div>
+        <div class="chips"><span class="chip">🎖 Vietnam era</span><span class="chip">💛 Friendship</span><span class="chip">⏱ ~5h left</span></div>
+      </div>
+      <div class="cover-wrap" id="crCover"></div>
+      <div class="cr-bottom">
+        <div class="ring">
+          <svg width="118" height="118" viewBox="0 0 118 118"><defs><linearGradient id="rg" x1="0" x2="1"><stop offset="0" stop-color="#A07C78"/><stop offset="1" stop-color="#755151"/></linearGradient></defs><circle cx="59" cy="59" r="50" stroke="#CDB792" stroke-width="11" fill="none"/><circle id="ringFill" cx="59" cy="59" r="50" stroke="url(#rg)" stroke-width="11" fill="none" stroke-linecap="round" stroke-dasharray="314.16" stroke-dashoffset="314.16"/></svg>
+          <div class="val"><div><b><span id="ringNum">0</span>%</b><small>Completed</small></div></div>
+        </div>
+        <div class="cr-actions">
+          <div class="pages-left">Page <b id="pgNow">0</b> of 400</div>
+          <div class="row">
+            <button class="btn primary" data-toast="Progress updated to p. 249">✎ Update progress</button>
+            <button class="iconbtn" data-toast="More options" aria-label="More">⋯</button>
+          </div>
+          <button class="chip" id="jamThis" style="align-self:flex-start"><span class="pagebars"><i></i><i></i><i></i></span> Read this together</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card challenge">
+      <div class="head">
+        <div><span class="eyebrow ghost">2026 Reading Challenge</span>
+          <div style="margin-top:20px" class="big-num"><span id="chNum">0</span> <small>/ 50 books</small></div></div>
+        <div class="iconbtn" aria-hidden="true">📅</div>
+      </div>
+      <div class="bar"><div class="fill" id="chFill"></div></div>
+      <div class="scale"><span>0</span><span>25</span><span>50</span></div>
+      <div class="ahead">▲ 3 books ahead of schedule</div>
+      <div class="ministats">
+        <div><b data-count="11240">0</b><span>pages</span></div>
+        <div><b data-count="41">0</b><span>day streak 🔥</span></div>
+        <div><b data-count="4.1" data-dec="1">0</b><span>avg rating</span></div>
+      </div>
+      <button class="btn ghost" style="width:100%;margin-top:18px" data-toast="Opening your challenge">View challenge →</button>
+    </div>
+
+    <div class="card activity">
+      <h3>Friend activity <span class="chip">All ▾</span></h3>
+      <div id="activity"></div>
+    </div>
+  </div>
+
+  <section class="block" id="jamSection">
+    <div class="shead reveal">
+      <div><h2>Book Jam</h2><p>Read together in real time, like a listening party for pages.</p></div>
+      <div class="jam-how"><span class="chip">📍 Live page sync</span><span class="chip">💬 Chapter chats</span><span class="chip">🔗 Invite with a code</span></div>
+    </div>
+    <div class="jam">
+      <div class="card jam-hero reveal">
+        <div class="jam-art" aria-hidden="true">
+          <div class="orbit"></div><div class="orbit o2"></div>
+          <div class="center" id="jamCenterCover"></div>
+          <div class="avatar orb" style="--s:44px;background:#66634C">PS</div>
+          <div class="avatar orb" style="--s:38px;background:#7A6250">JT</div>
+          <div class="avatar orb" style="--s:40px;background:#72583E">ML</div>
+          <div class="avatar orb" style="--s:36px;background:#755151">DK</div>
+        </div>
+        <span class="eyebrow" style="align-self:flex-start"><span class="pagebars"><i></i><i></i><i></i></span> New · Book Jam</span>
+        <h2 style="margin-top:18px">Your book club,<br/><em>live.</em></h2>
+        <p>Start a Jam and friends follow along page by page. See where everyone is, react to big moments, and unlock discussion at chapter checkpoints. No spoilers.</p>
+        <div class="actions">
+          <button class="btn primary" id="startJam">▶ Start a Jam</button>
+          <button class="btn ghost" id="enterCode">Enter jam code</button>
+          <form class="codeform" id="codeForm"><input id="codeIn" placeholder="JAM-XXXX" aria-label="Jam code" maxlength="8" autocomplete="off" /><button class="btn primary" type="submit">Join</button></form>
+        </div>
+      </div>
+      <div class="jam-list" id="jamList"></div>
+    </div>
+  </section>
+
+  <section class="block" id="shelfSection">
+    <div class="shead reveal">
+      <div><h2>Your shelf</h2><p>Hover to pull a book out. Click to turn it around.</p></div>
+      <div class="ctrls"><button class="btn ghost" id="reshelve">↻ Reshelve</button></div>
+    </div>
+    <div class="shelf-wrap reveal">
+      <div class="shelf-tabs"><button class="on">Read · 34</button><button>Favorites</button><button>Want to read</button></div>
+      <div class="shelf" id="shelf"></div>
+      <div class="plank"></div>
+      <div class="detail" id="detail"></div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="shead reveal">
+      <div><h2>Picked for you</h2><p>Because you loved <i>Lessons in Chemistry</i> and <i>The Women</i>.</p></div>
+      <div class="ctrls"><button class="iconbtn" id="prev" aria-label="Previous">‹</button><button class="iconbtn" id="next" aria-label="Next">›</button></div>
+    </div>
+    <div class="carousel" id="carousel"></div>
+  </section>
+
+  <footer>Goodreads redesign concept · prototype with mock data</footer>
+</div>
+
+<div id="jamModal" role="dialog" aria-modal="true" aria-label="Book Jam session">
+  <div class="backdrop" id="jamBackdrop"></div>
+  <div class="jpanel" id="jpanel">
+    <button class="iconbtn jclose" id="jamClose" aria-label="Close">✕</button>
+    <div class="jmain">
+      <div class="jtop j-in">
+        <div id="jamCover"></div>
+        <div class="ti">
+          <span class="livepill"><span class="dot"></span> Live · <span id="jamTimer">00:00</span></span>
+          <h3 id="jamTitle">The Women</h3>
+          <div class="sub" id="jamSub">Hosted by you</div>
+          <div class="jmeta">
+            <span class="conn" id="connStatus"><i></i> Offline demo</span>
+            <label class="namefld">You are <input id="nameIn" maxlength="30" aria-label="Your name" /></label>
+            <label class="botsT" id="botsWrap"><input type="checkbox" id="botsToggle" /> Demo friends</label>
+          </div>
+        </div>
+      </div>
+      <div class="track-card j-in">
+        <div class="track-head"><b>Where everyone is</b><span class="sub" id="trackMeta">5 reading</span></div>
+        <div class="track" id="track"><div class="host-fill" id="hostFill"></div></div>
+        <div class="track-foot"><span>p. 1</span><span>◆ discussion checkpoints</span><span id="trackEnd">p. 400</span></div>
+      </div>
+      <div class="bring-banner" id="bringBanner"><span>⟲</span><span class="sp"><b id="bringWho">Host</b> is on <b id="bringPage">p. 1</b> and asked everyone to jump there.</span><button class="btn primary" id="bringAccept">Jump there</button><button class="btn ghost" id="bringDismiss">Not now</button></div>
+      <div class="jcontrols j-in">
+        <button class="btn primary" id="syncBtn">⟲ Sync to host's page</button>
+        <button class="btn ghost" id="pauseBtn">❚❚ Pause for discussion</button>
+        <button class="btn ghost" id="turnBtn">Turn page →</button>
+      </div>
+      <div class="jrow j-in">
+        <div class="people"><h5>In this jam</h5><div id="people"></div></div>
+        <div class="invite"><h5>Invite friends</h5>
+          <div class="inv-body"><div class="qr" id="qr"></div>
+            <div><div class="sub" style="font-size:12px">Jam code</div><div class="code" id="jamCode">JAM-7K4Q</div><button class="btn ghost" id="copyCode">🔗 Copy link</button></div>
+          </div>
+          <div class="invlink" id="invLink">goodreads.example/jam</div>
+          <div class="inv-note">Messages are tagged with the sender's page. Anyone who hasn't reached that page sees a locked placeholder until they catch up.</div>
+        </div>
+      </div>
+    </div>
+    <div class="jside">
+      <h5 class="j-in">Jam chat · spoiler-safe</h5>
+      <div class="stream j-in" id="stream"></div>
+      <div class="reacts j-in" id="reacts"><button aria-label="love">🤎</button><button aria-label="shocked">😱</button><button aria-label="crying">😭</button><button aria-label="fire">🔥</button><button aria-label="book">📖</button><button aria-label="clap">👏</button></div>
+      <form class="compose j-in" id="compose"><input id="composeIn" placeholder="Say something about this page…" /><button class="btn dark" type="submit">Send</button></form>
+    </div>
+    <div class="floaters" id="floaters"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>

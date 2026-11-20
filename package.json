@@ -1,0 +1,10 @@
+{
+  "name": "goodreads-book-jam",
+  "version": "0.4.0",
+  "private": true,
+  "description": "Goodreads redesign prototype with a live Book Jam (read-along) mock sync server",
+  "main": "server/server.js",
+  "scripts": { "start": "node server/server.js" },
+  "engines": { "node": ">=18" },
+  "dependencies": { "ws": "^8.18.0" }
+}

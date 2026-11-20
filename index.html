@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Goodreads — Redesign Prototype</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%228%22 fill=%22%23755151%22/%3E%3Ctext x=%2216%22 y=%2223%22 font-size=%2220%22 text-anchor=%22middle%22 fill=%22%23FFF9F3%22 font-family=%22Georgia%22%3Eg%3C/text%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+:root{
+  /* Mariah's palette */
+  --clockwork:#72583E; --cedar:#7C7960; --latte:#DBC4A5; --olive:#44422D; --noir:#443223; --mauve:#755151; --weathered:#A08670; --linen:#FFF9F3;
+  --cream:#CFB794; --paper:#DCC6A7; --card:#E4D0B4; --line:#C4A985;
+  --terra:#755151; --terra-d:#5E3F3F; --terra-l:#D7BBAE;
+  --brown:#443223; --brown-2:#5A4530; --muted:#5A4530;
+  --wood-1:#72583E; --wood-2:#443223; --wood-3:#8C6E50;
+  --gold:#72583E; --chip:#CDC4A4; --chip-fg:#44422D;
+  --shadow:0 1px 2px rgba(68,50,35,.10),0 10px 26px rgba(68,50,35,.14);
+  --radius:20px;
+  --serif:'Fraunces','Playfair Display',Georgia,serif;
+  --sans:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;background:#CFB794}
+body{font-family:var(--sans);background:radial-gradient(120% 80% at 15% 0%,#D8C2A2 0%,transparent 60%),radial-gradient(90% 70% at 100% 100%,#BFA382 0%,transparent 65%),var(--cream);color:var(--brown);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body{position:relative}
+body::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.35;mix-blend-mode:multiply;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .27 0 0 0 0 .2 0 0 0 0 .14 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+body.locked{overflow:hidden}
+button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
+h1,h2,h3,.serif{font-family:var(--serif);font-weight:500;letter-spacing:-.01em}
+.decor{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.decor span{position:absolute;font-family:var(--serif);color:rgba(117,81,81,.12);font-size:180px;line-height:1;user-select:none}
+.decor .sprig{position:absolute;width:160px;height:160px;opacity:.18}
+#intro{position:fixed;inset:0;z-index:100;display:grid;place-items:center;background:radial-gradient(ellipse at 50% 40%,#5A4530 0%,#443223 45%,#2A1F15 100%);overflow:hidden}
+#intro .glow{position:absolute;width:900px;height:900px;border-radius:50%;background:radial-gradient(circle,rgba(219,196,165,.22),transparent 60%);filter:blur(10px)}
+#intro .dust{position:absolute;left:0;top:0;width:3px;height:3px;border-radius:50%;background:#DBC4A5;opacity:0}
+.stage{perspective:1500px;perspective-origin:50% 30%;position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:36px}
+.book3d{position:relative;width:min(680px,88vw);aspect-ratio:1.6/1;transform-style:preserve-3d;transform:rotateX(18deg)}
+.book3d .cover-back{position:absolute;inset:-12px -14px;border-radius:10px;background:linear-gradient(135deg,#755151,#4E3434);box-shadow:0 40px 80px rgba(0,0,0,.55);transform:translateZ(-6px)}
+.book3d .half{position:absolute;top:0;bottom:0;width:50%;padding:9% 8%;overflow:hidden}
+.book3d .half.left{left:0;border-radius:6px 0 0 6px;background:linear-gradient(270deg,#CDB592,#E9D8BC 14%,#E9D8BC)}
+.book3d .half.right{right:0;border-radius:0 6px 6px 0;background:linear-gradient(90deg,#D3BC9A,#E9D8BC 12%,#E9D8BC)}
+.book3d .spine-shadow{position:absolute;left:50%;top:0;bottom:0;width:40px;transform:translateX(-50%);background:linear-gradient(90deg,transparent,rgba(68,50,35,.3),transparent);z-index:90;pointer-events:none;transform:translateX(-50%) translateZ(8px)}
+#leaves{position:absolute;inset:0;transform-style:preserve-3d}
+.leaf .shade{position:absolute;inset:0;pointer-events:none;opacity:0;background:linear-gradient(90deg,rgba(68,50,35,.4),rgba(68,50,35,.06) 60%,rgba(255,249,243,.12))}
+.leaf{position:absolute;top:0;bottom:0;left:50%;width:50%;transform-origin:left center;transform-style:preserve-3d}
+.leaf .face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;padding:9% 8%;overflow:hidden}
+.leaf .front{background:linear-gradient(90deg,#D3BC9A,#ECDCC2 10%,#ECDCC2);border-radius:0 6px 6px 0;box-shadow:inset 8px 0 18px -10px rgba(68,50,35,.35)}
+.leaf .back{transform:rotateY(180deg);background:linear-gradient(270deg,#D3BC9A,#ECDCC2 10%,#ECDCC2);border-radius:6px 0 0 6px}
+.pagetext{font-family:var(--serif);color:#5A4530;font-size:clamp(7px,1.1vw,11px);line-height:1.75}
+.pagetext .dropcap{float:left;font-size:3.2em;line-height:.9;margin:2px 6px 0 0;color:var(--terra)}
+.pagetext .ln{height:.55em;background:#D2BB98;border-radius:3px;margin:.62em 0}
+.pagetext .ttl{font-size:1.6em;color:var(--brown);margin-bottom:.6em;text-align:center}
+.pagetext .orn{text-align:center;color:var(--terra);margin:.4em 0;letter-spacing:.4em}
+.pagenum{position:absolute;bottom:6%;left:0;right:0;text-align:center;font-family:var(--serif);font-size:10px;color:#8C735C}
+.intro-word{font-family:var(--serif);color:#FFF9F3;font-size:clamp(34px,5vw,56px);opacity:0;letter-spacing:-.02em}
+.intro-word em{font-style:italic;color:#D7BBAE}
+.intro-sub{color:#DBC4A5;font-size:14px;letter-spacing:.3em;text-transform:uppercase;opacity:0;margin-top:-24px}
+.skip{position:absolute;right:24px;bottom:24px;z-index:3;color:#DBC4A5;border:1px solid rgba(219,196,165,.35);padding:8px 16px;border-radius:999px;font-size:13px;backdrop-filter:blur(6px)}
+.skip:hover{background:rgba(255,249,243,.08)}
+.app{position:relative;z-index:1;max-width:1240px;margin:0 auto;padding:0 28px 80px}
+nav.top{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:28px;padding:18px 0;background:linear-gradient(rgba(207,183,148,.96) 70%,rgba(207,183,148,0));backdrop-filter:blur(2px)}
+.wordmark{font-family:var(--serif);font-size:30px;font-weight:400;letter-spacing:-.03em;color:var(--brown);display:flex;align-items:center;gap:10px}
+.wordmark .mk{width:34px;height:34px;border-radius:10px;background:var(--terra);display:grid;place-items:center;color:var(--linen);font-size:18px;font-weight:600}
+.search{flex:1;max-width:440px;display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:11px 18px;box-shadow:var(--shadow);transition:box-shadow .25s,border-color .25s}
+.search:focus-within{border-color:var(--terra);box-shadow:0 0 0 4px rgba(117,81,81,.18)}
+.search input{flex:1;min-width:0;border:none;outline:none;background:transparent;font:inherit;color:var(--brown);font-size:14px}
+.search svg{flex:none;color:var(--muted)}
+.navbtns{margin-left:auto;display:flex;align-items:center;gap:6px}
+.navbtn{display:flex;align-items:center;gap:8px;padding:9px 14px;border-radius:999px;font-size:14px;font-weight:500;color:var(--brown-2);transition:background .2s,color .2s}
+.navbtn:hover,.navbtn.active{background:var(--terra-l);color:var(--terra-d)}
+.avatar{width:var(--s,40px);height:var(--s,40px);border-radius:50%;display:grid;place-items:center;font-weight:600;font-size:calc(var(--s,40px)*.38);color:var(--linen);flex:none;border:2px solid var(--card)}
+.me{background:linear-gradient(135deg,#755151,#443223)}
+.grid{display:grid;grid-template-columns:1.15fr 1fr .95fr;gap:24px;margin-top:10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:26px;position:relative;overflow:hidden}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;background:var(--terra);color:var(--linen);font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;padding:6px 12px;border-radius:999px}
+.eyebrow.ghost{background:var(--terra-l);color:var(--terra-d)}
+.card h2{font-size:26px}
+.sub{color:var(--muted);font-size:14px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;background:var(--chip);color:var(--chip-fg);font-size:12.5px;font-weight:500;transition:background .2s,transform .2s}
+.chip:hover{background:var(--terra-l);color:var(--terra-d);transform:translateY(-1px)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 20px;border-radius:14px;font-weight:600;font-size:14px;transition:transform .2s,box-shadow .2s,background .2s}
+.btn.primary{background:var(--terra);color:var(--linen);box-shadow:0 8px 20px -8px rgba(117,81,81,.8)}
+.btn.primary:hover{background:var(--terra-d);transform:translateY(-2px)}
+.btn.ghost{border:1px solid #B79B78;background:rgba(219,196,165,.55);color:var(--brown)}
+.btn.ghost:hover{border-color:var(--terra);color:var(--terra-d)}
+.btn.dark{background:var(--olive);color:var(--linen)}
+.btn.dark:hover{background:#2F2E1F;transform:translateY(-2px)}
+.iconbtn{width:38px;height:38px;border-radius:50%;border:1px solid #B79B78;background:rgba(219,196,165,.6);display:grid;place-items:center;transition:all .2s;flex:none}
+.iconbtn:hover{border-color:var(--terra);color:var(--terra)}
+.cr{display:grid;grid-template-columns:1fr 150px;gap:18px;min-height:420px}
+.cr h1{font-size:44px;line-height:1.02;margin:18px 0 6px}
+.cr .meta{color:var(--brown-2);font-size:14px;line-height:1.7;margin-top:14px}
+.cr .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.cr .cover-wrap{align-self:start;margin-top:8px}
+.cr-bottom{grid-column:1/-1;display:flex;align-items:center;gap:22px;margin-top:auto}
+.ring{position:relative;width:118px;height:118px;flex:none}
+.ring svg{transform:rotate(-90deg)}
+.ring .val{position:absolute;inset:0;display:grid;place-items:center;text-align:center}
+.ring .val b{font-family:var(--serif);font-size:30px;font-weight:500;display:block;line-height:1}
+.ring .val small{font-size:11px;color:var(--muted)}
+.cr-actions{display:flex;flex-direction:column;gap:10px}
+.cr-actions .row{display:flex;gap:8px;align-items:center}
+.pages-left{font-size:13px;color:var(--muted)}
+.cover{position:relative;border-radius:4px 10px 10px 4px;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;padding:12% 10%;color:var(--fg,#fff);box-shadow:0 1px 1px rgba(0,0,0,.1),0 10px 22px -6px rgba(68,50,35,.45);text-align:center;isolation:isolate;flex:none}
+.cover::before{content:"";position:absolute;left:0;top:0;bottom:0;width:7%;background:linear-gradient(90deg,rgba(0,0,0,.25),rgba(255,255,255,.12),transparent);z-index:2}
+.cover::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 30% 0%,rgba(255,249,243,.18),transparent 55%);z-index:1}
+.cover .ct{font-family:var(--serif);font-weight:600;line-height:1.02;position:relative;z-index:3;text-transform:uppercase;letter-spacing:.02em}
+.cover .ca{font-size:.62em;letter-spacing:.14em;text-transform:uppercase;opacity:.85;position:relative;z-index:3}
+.cover .motif{position:absolute;z-index:0;left:50%;top:56%;transform:translate(-50%,-50%);opacity:.5}
+.challenge .head{display:flex;justify-content:space-between;align-items:flex-start}
+.bar{height:22px;background:#CDB792;border-radius:999px;overflow:hidden;position:relative;margin-top:22px}
+.bar .fill{position:absolute;inset:0 auto 0 0;width:0;background:linear-gradient(90deg,var(--cedar),var(--olive));border-radius:999px}
+.bar .fill::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(115deg,rgba(255,249,243,.12) 0 10px,transparent 10px 20px)}
+.scale{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:10px}
+.big-num{font-family:var(--serif);font-size:54px;line-height:1}
+.big-num small{font-size:20px;color:var(--muted)}
+.ministats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:20px}
+.ministats div{background:var(--paper);border-radius:14px;padding:12px;text-align:center}
+.ministats b{font-family:var(--serif);font-size:22px;font-weight:500;display:block}
+.ministats span{font-size:11px;color:var(--muted)}
+.ahead{margin-top:14px;font-size:13px;color:var(--olive);background:var(--chip);padding:8px 12px;border-radius:10px;display:inline-flex;gap:6px}
+.activity h3{font-size:22px;display:flex;justify-content:space-between;align-items:center}
+.act{display:flex;gap:12px;padding:14px;border:1px solid var(--line);border-radius:16px;margin-top:12px;background:var(--paper);transition:box-shadow .25s,border-color .25s;cursor:pointer}
+.act:hover{box-shadow:var(--shadow);border-color:#B79B78}
+.act .t{flex:1;min-width:0}
+.act .n{font-weight:600;font-size:14px;display:flex;justify-content:space-between}
+.act .n small{font-weight:400;color:var(--muted);font-size:12px}
+.act .b{font-size:13px;color:var(--brown-2);margin-top:2px}
+.stars{color:var(--gold);font-size:13px;letter-spacing:1px;margin-top:2px}
+.stars i{color:#BFA584;font-style:normal}
+section.block{margin-top:64px}
+.shead{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:22px;flex-wrap:wrap}
+.shead h2{font-size:36px;line-height:1.05}
+.shead p{color:var(--muted);margin-top:6px;font-size:15px}
+.jam{display:grid;grid-template-columns:1.25fr 1fr;gap:24px}
+.jam-hero{background:radial-gradient(120% 120% at 0% 0%,#5C5A3E 0%,#44422D 50%,#2F2E1F 100%);color:var(--linen);border:none;padding:36px;min-height:380px;display:flex;flex-direction:column}
+.jam-hero h2{font-size:46px;line-height:1;color:var(--linen)}
+.jam-hero h2 em{color:#E6CFC4}
+.jam-hero p{color:#E6D5BC;max-width:340px;margin-top:14px;line-height:1.6;position:relative;z-index:2}
+.jam-hero .eyebrow{background:rgba(219,196,165,.16);color:#E6CFC4}
+.jam-hero .actions{display:flex;gap:12px;margin-top:auto;padding-top:26px;flex-wrap:wrap;position:relative;z-index:2}
+.jam-hero .btn.ghost{background:transparent;color:var(--linen);border-color:rgba(255,249,243,.3)}
+.jam-hero .btn.ghost:hover{border-color:#E6CFC4;color:#E6CFC4}
+.pagebars{display:inline-flex;align-items:flex-end;gap:3px;height:14px}
+.pagebars i{width:3px;background:currentColor;border-radius:2px;height:40%}
+.jam-art{position:absolute;right:-60px;top:30px;width:300px;height:300px;pointer-events:none}
+.jam-art .orbit{position:absolute;inset:0;border:1px dashed rgba(219,196,165,.3);border-radius:50%}
+.jam-art .orbit.o2{inset:50px}
+.jam-art .center{position:absolute;left:104px;top:81px}
+.jam-art .avatar{position:absolute;left:0;top:0}
+.jam-list{display:flex;flex-direction:column;gap:14px}
+.jamcard{display:flex;gap:16px;align-items:center;padding:18px}
+.jamcard .info{flex:1;min-width:0}
+.jamcard .live{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--terra);text-transform:uppercase}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--terra);position:relative;display:inline-block}
+.dot::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:2px solid var(--terra);animation:ping 1.6s infinite}
+@keyframes ping{0%{transform:scale(.5);opacity:.9}100%{transform:scale(1.6);opacity:0}}
+.jamcard h4{font-family:var(--serif);font-weight:500;font-size:19px;margin:3px 0}
+.stack{display:flex}
+.stack .avatar{margin-left:-8px}
+.stack .avatar:first-child{margin-left:0}
+.mini-track{height:6px;background:#CDB792;border-radius:6px;margin-top:10px;position:relative}
+.mini-track span{position:absolute;top:50%;width:10px;height:10px;border-radius:50%;transform:translate(-50%,-50%);border:2px solid var(--card)}
+.jam-how{display:flex;gap:10px;flex-wrap:wrap;margin-top:4px}
+.shelf-wrap{background:linear-gradient(180deg,#BFA382,#A88B6C);border-radius:28px;padding:34px 34px 10px;border:1px solid var(--line);position:relative}
+.shelf-tabs{display:flex;gap:8px;margin-bottom:6px;flex-wrap:wrap}
+.shelf-tabs button{padding:8px 16px;border-radius:999px;font-size:13px;font-weight:600;color:var(--noir);background:rgba(219,196,165,.7)}
+.shelf-tabs button.on{background:var(--noir);color:var(--linen)}
+.shelf{position:relative;display:flex;align-items:flex-end;gap:4px;padding:50px 24px 0;min-height:270px}
+.plank{height:26px;margin:0 -10px 26px;border-radius:6px;background:linear-gradient(180deg,var(--wood-3),var(--wood-1) 40%,var(--wood-2));box-shadow:0 14px 22px -8px rgba(42,31,21,.6),inset 0 2px 0 rgba(255,249,243,.18);position:relative}
+.plank::after{content:"";position:absolute;inset:0;border-radius:6px;background:repeating-linear-gradient(90deg,rgba(0,0,0,.04) 0 2px,transparent 2px 38px),repeating-linear-gradient(0deg,rgba(255,255,255,.05) 0 1px,transparent 1px 6px)}
+.spine{position:relative;width:var(--w);height:var(--h);border-radius:3px 3px 2px 2px;background:var(--bg);color:var(--fg,#fff);cursor:pointer;transform-origin:bottom center;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:12px 0;box-shadow:inset -6px 0 10px -4px rgba(0,0,0,.25),inset 4px 0 6px -3px rgba(255,255,255,.25),0 4px 6px -2px rgba(0,0,0,.25);flex:none;will-change:transform}
+.spine .st{writing-mode:vertical-rl;transform:rotate(180deg);font-family:var(--serif);font-weight:600;font-size:13px;letter-spacing:.04em;white-space:nowrap;overflow:hidden;max-height:calc(var(--h) - 60px);text-overflow:ellipsis}
+.spine .band{width:100%;height:5px;background:rgba(255,255,255,.35)}
+.spine .band.b2{background:rgba(0,0,0,.18)}
+.spine .sa{font-size:9px;letter-spacing:.1em;opacity:.8;writing-mode:vertical-rl;transform:rotate(180deg)}
+.shelf .decor-item{flex:none;align-self:flex-end;margin:0 10px}
+.plant{width:70px;height:120px;position:relative}
+.plant .pot{position:absolute;bottom:0;left:12px;width:46px;height:42px;border-radius:4px 4px 12px 12px;background:linear-gradient(180deg,#8E6464,#755151)}
+.plant .lf{position:absolute;bottom:38px;left:27px;width:16px;height:56px;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;background:linear-gradient(var(--cedar),var(--olive));transform-origin:bottom center}
+.bookend{width:20px;height:110px;background:linear-gradient(90deg,#5A4530,#2A1F15);border-radius:4px 14px 2px 2px}
+.stack-flat{display:flex;flex-direction:column;gap:2px;align-items:center}
+.stack-flat i{display:block;height:16px;border-radius:2px;box-shadow:inset 0 -3px 0 rgba(0,0,0,.15)}
+.detail{position:absolute;z-index:20;width:330px;background:var(--card);border-radius:20px;box-shadow:0 30px 60px -20px rgba(42,31,21,.6);padding:18px;display:none;gap:16px;border:1px solid var(--line)}
+.detail .close{position:absolute;right:10px;top:10px;width:30px;height:30px}
+.detail h4{font-family:var(--serif);font-weight:500;font-size:20px;line-height:1.1}
+.detail p{font-size:12.5px;color:var(--brown-2);line-height:1.55;margin-top:6px}
+.detail .row{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.carousel{display:flex;gap:22px;overflow-x:auto;scroll-snap-type:x mandatory;padding:14px 4px 26px;scrollbar-width:none}
+.carousel::-webkit-scrollbar{display:none}
+.pick{scroll-snap-align:start;flex:none;width:170px;cursor:pointer}
+.pick .cover{transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s}
+.pick:hover .cover{transform:translateY(-10px) rotate(-1.5deg);box-shadow:0 26px 34px -12px rgba(42,31,21,.55)}
+.pick .pt{font-weight:600;font-size:14px;margin-top:14px}
+.pick .pa{font-size:13px;color:var(--muted)}
+.pick .why{margin-top:8px;font-size:11.5px;color:var(--terra-d);background:var(--terra-l);display:inline-block;padding:4px 9px;border-radius:999px}
+.ctrls{display:flex;gap:8px}
+footer{margin-top:70px;text-align:center;color:var(--muted);font-size:13px}
+#jamModal{position:fixed;inset:0;z-index:80;display:none}
+#jamModal .backdrop{position:absolute;inset:0;background:rgba(42,31,21,.6);backdrop-filter:blur(6px)}
+.jpanel{position:absolute;left:50%;top:50%;width:min(1100px,94vw);max-height:92vh;overflow:auto;transform:translate(-50%,-50%);background:var(--latte);border-radius:28px;box-shadow:0 50px 100px -30px rgba(0,0,0,.6);display:grid;grid-template-columns:1.5fr 1fr}
+.jmain{padding:30px;border-right:1px solid var(--line)}
+.jside{padding:30px;display:flex;flex-direction:column;background:#CDB592;border-radius:0 28px 28px 0;min-height:0}
+.jtop{display:flex;gap:20px;align-items:center}
+.jtop .ti{flex:1}
+.jtop h3{font-size:30px;line-height:1.05;margin-top:8px}
+.livepill{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:999px;background:var(--terra-l);color:var(--terra-d);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.jclose{position:absolute;right:18px;top:18px;z-index:6}
+.track-card{margin-top:24px;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:22px 22px 18px}
+.track-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:100px}
+.track-head b{font-family:var(--serif);font-weight:500;font-size:18px}
+.track{position:relative;height:10px;background:#CDB792;border-radius:999px;margin:0 16px}
+.track .host-fill{position:absolute;inset:0 auto 0 0;width:0;background:linear-gradient(90deg,#A07C78,var(--mauve));border-radius:999px}
+.checkpoint{position:absolute;top:50%;width:14px;height:14px;margin:-7px 0 0 -7px;transform:rotate(45deg);background:var(--card);border:2px solid var(--brown-2);border-radius:3px;z-index:1;cursor:pointer}
+.checkpoint.done{background:var(--terra);border-color:var(--terra)}
+.cplabel{position:absolute;top:18px;transform:translateX(-50%);white-space:nowrap;font-size:10.5px;color:var(--muted);font-weight:500}
+.marker{position:absolute;bottom:14px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;z-index:2;color:var(--brown)}
+.marker .avatar{--s:32px;box-shadow:0 4px 10px rgba(42,31,21,.3)}
+.marker::after{content:"";width:2px;height:8px;background:currentColor;opacity:.4;margin-top:2px}
+.marker .pg{position:absolute;bottom:44px;font-size:10px;font-weight:700;background:var(--noir);color:var(--linen);padding:2px 7px;border-radius:6px;white-space:nowrap;opacity:0;transition:opacity .2s}
+.marker:hover{z-index:5}
+.marker.alt::after{height:44px}
+.marker.host{z-index:4}
+.marker.alt .pg{bottom:80px}
+.marker:hover .pg,.marker.host .pg{opacity:1}
+.marker.host .avatar{outline:2px solid var(--clockwork);outline-offset:2px}
+.track-foot{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin:40px 0 0}
+.jrow{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+.people{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px}
+.people h5,.invite h5,.jside h5{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;font-weight:600}
+.person{display:flex;align-items:center;gap:10px;padding:6px 0}
+.person .avatar{--s:30px}
+.person .nm{flex:1;font-size:13.5px;font-weight:500}
+.person .nm small{display:block;color:var(--muted);font-weight:400;font-size:11.5px}
+.person .st{font-size:11px;padding:3px 8px;border-radius:999px;background:var(--chip);color:var(--olive);font-weight:600}
+.person .st.away{background:var(--paper);color:var(--muted)}
+.invite{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;display:flex;flex-direction:column}
+.inv-body{display:flex;gap:14px;align-items:center}
+.qr{width:100px;height:100px;display:grid;grid-template-columns:repeat(21,1fr);grid-template-rows:repeat(21,1fr);padding:6px;background:#EADBC3;border-radius:10px;border:1px solid var(--line);flex:none}
+.code{font-family:var(--serif);font-size:22px;letter-spacing:.06em;white-space:nowrap}
+.inv-body .btn{padding:8px 12px;font-size:12.5px;margin-top:8px}
+.inv-note{font-size:11.5px;color:var(--muted);margin-top:12px;line-height:1.5}
+.jcontrols{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+.stream{flex:1;overflow:hidden;position:relative;display:flex;flex-direction:column;justify-content:flex-end;gap:10px;min-height:320px;max-height:440px;-webkit-mask-image:linear-gradient(transparent,#000 22%);mask-image:linear-gradient(transparent,#000 22%)}
+.msg{display:flex;gap:10px;align-items:flex-start;flex:none}
+.msg .avatar{--s:28px}
+.msg .bub{background:#E8D7BE;border:1px solid var(--line);border-radius:4px 14px 14px 14px;padding:8px 12px;font-size:13px;line-height:1.45}
+.msg .bub small{display:block;font-size:10.5px;color:var(--muted);margin-bottom:2px}
+.msg.sys .bub{background:var(--terra-l);border-color:transparent;color:var(--terra-d);border-radius:14px;font-weight:500;width:100%}
+.reacts{display:flex;gap:6px;margin-top:14px}
+.reacts button{width:42px;height:42px;border-radius:12px;background:#E4D0B4;border:1px solid var(--line);font-size:19px;transition:transform .15s,border-color .15s}
+.reacts button:hover{transform:translateY(-3px) scale(1.06);border-color:var(--terra)}
+.compose{display:flex;gap:8px;margin-top:10px}
+.compose input{flex:1;min-width:0;border:1px solid var(--line);border-radius:12px;padding:11px 14px;font:inherit;font-size:13px;background:#E8D7BE;color:var(--noir);outline:none}
+.compose input:focus{border-color:var(--terra)}
+.floaters{position:absolute;inset:0;pointer-events:none;overflow:hidden;border-radius:28px;z-index:5}
+.floaters span{position:absolute;font-size:26px;top:calc(100% - 140px)}
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:var(--noir);color:var(--linen);padding:12px 18px;border-radius:14px;font-size:14px;z-index:120;opacity:0;pointer-events:none;box-shadow:0 20px 40px -10px rgba(0,0,0,.4)}
+@media (max-width:1060px){
+  .grid{grid-template-columns:1fr 1fr}
+  .grid .activity{grid-column:1/-1}
+  .jam{grid-template-columns:1fr}
+}
+@media (max-width:860px){
+  .navbtn span:not(.pagebars){display:none}
+  .jpanel{grid-template-columns:1fr}
+  .jside{border-radius:0 0 28px 28px}
+  .jmain{border-right:none;border-bottom:1px solid var(--line)}
+}
+@media (max-width:720px){
+  .app{padding:0 16px 60px}
+  nav.top{gap:12px}
+  .grid{grid-template-columns:1fr}
+  .wordmark .txt{display:none}
+  .cr{grid-template-columns:1fr 110px}
+  .cr h1{font-size:34px}
+  .jam-hero{padding:26px}
+  .jam-hero h2{font-size:36px}
+  .jam-art{opacity:.3}
+  .shead h2{font-size:28px}
+  .jrow{grid-template-columns:1fr}
+  .shelf{overflow-x:auto;overflow-y:visible;padding-left:6px}
+  .shelf-wrap{padding:24px 16px 6px}
+  .detail{width:290px}
+  .jmain,.jside{padding:20px}
+  .marker .avatar{--s:24px;font-size:9px}
+  .marker.alt::after{height:30px}
+  .marker.alt .pg{bottom:58px}
+  .marker .pg{bottom:36px}
+  .track-head{margin-bottom:80px}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .dot::after{animation:none}
+  .pick .cover,.act{transition:none}
+}
+input::placeholder{color:#6B5540}
+.cover .ct{text-shadow:0 1px 0 rgba(0,0,0,.08)}
+
+/* ---------- v3: live sync UI ---------- */
+.jmeta{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:10px}
+.conn{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:999px;background:var(--paper);color:var(--muted)}
+.conn i{width:7px;height:7px;border-radius:50%;background:#8C735C;display:inline-block}
+.conn.live{background:var(--chip);color:var(--olive)} .conn.live i{background:var(--olive)}
+.conn.warn{background:var(--terra-l);color:var(--terra-d)} .conn.warn i{background:var(--mauve)}
+.namefld{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);background:var(--paper);border-radius:999px;padding:3px 4px 3px 10px}
+.namefld input{width:110px;border:none;background:#E8D7BE;border-radius:999px;padding:4px 10px;font:inherit;font-size:12px;color:var(--noir);outline:none}
+.namefld input:focus{box-shadow:0 0 0 2px var(--mauve)}
+.botsT{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);cursor:pointer;background:var(--paper);border-radius:999px;padding:4px 10px}
+.botsT input{accent-color:var(--mauve)}
+.bring-banner{display:none;align-items:center;gap:12px;margin-top:16px;padding:12px 14px;border-radius:16px;background:var(--olive);color:var(--linen);font-size:13.5px}
+.bring-banner b{font-weight:600}
+.bring-banner .sp{flex:1}
+.bring-banner .btn{padding:8px 14px;font-size:13px}
+.bring-banner .btn.ghost{background:transparent;color:var(--linen);border-color:rgba(255,249,243,.35)}
+.msg .bub.locked{background:repeating-linear-gradient(135deg,#D9C4A6 0 8px,#D2BC9C 8px 16px);color:var(--muted);font-style:italic}
+.msg .bub.locked b{font-style:normal}
+.msg.mine{flex-direction:row-reverse}
+.msg.mine .bub{background:#D7BBAE;border-color:transparent;border-radius:14px 4px 14px 14px}
+.person .tag{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-left:4px}
+.person.off{opacity:.55}
+.invlink{margin-top:10px;font-size:11.5px;color:var(--noir);background:#E8D7BE;border-radius:10px;padding:7px 10px;word-break:break-all;font-family:ui-monospace,Menlo,monospace}
+.codeform{display:none;gap:8px;align-items:center}
+.codeform.on{display:flex}
+.codeform input{width:150px;border:1px solid rgba(255,249,243,.35);background:rgba(255,249,243,.08);color:var(--linen);border-radius:12px;padding:11px 14px;font:inherit;font-size:14px;letter-spacing:.06em;text-transform:uppercase;outline:none}
+.codeform input::placeholder{color:#CDBFA6}
+.codeform input:focus{border-color:#E6CFC4}
+.livejam-empty{padding:22px;text-align:left}
+</style>
+</head>
+<body class="locked">
+<div id="intro" aria-hidden="true">
+  <div class="glow"></div>
+  <div class="stage">
+    <div class="book3d" id="book3d">
+      <div class="cover-back"></div>
+      <div class="half left"><div class="pagetext">
+        <div class="ttl">Chapter One</div><div class="orn">✦ ✦ ✦</div>
+        <span class="dropcap">I</span>t was a quiet hour in the library, the kind where the dust hangs gold in the light and every spine seems to lean, just slightly, toward the reader.
+        <div class="ln"></div><div class="ln" style="width:86%"></div><div class="ln"></div><div class="ln" style="width:70%"></div><div class="ln"></div><div class="ln" style="width:92%"></div>
+      </div><div class="pagenum">1</div></div>
+      <div class="half right"><div class="pagetext" style="text-align:center;padding-top:22%">
+        <div style="font-size:3em;color:var(--terra)">g</div>
+        <div class="ttl" style="margin-top:.3em">Goodreads</div>
+        <div style="letter-spacing:.3em;font-size:.8em;text-transform:uppercase">Your library, reimagined</div>
+      </div></div>
+      <div id="leaves"></div>
+      <div class="spine-shadow"></div>
+    </div>
+    <div class="intro-word">Find your next <em>great read</em></div>
+    <div class="intro-sub">Opening your library</div>
+  </div>
+  <button class="skip" id="skipIntro">Skip intro ↵</button>
+</div>
+
+<div class="decor" aria-hidden="true">
+  <span data-speed="-0.25" style="left:-30px;top:120px">“</span>
+  <span data-speed="0.18" style="right:2%;top:900px;font-size:240px">&amp;</span>
+  <span data-speed="-0.12" style="left:6%;top:1500px;font-size:220px">”</span>
+  <svg class="sprig" data-speed="0.3" style="right:8%;top:220px" viewBox="0 0 100 100"><path d="M10 90 C40 60 60 30 90 10 M30 70 C20 60 18 50 22 40 M30 70 C42 68 52 62 58 54 M50 50 C40 42 38 32 42 22 M50 50 C62 50 70 44 76 36 M68 32 C62 24 62 16 66 8" stroke="#755151" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>
+  <svg class="sprig" data-speed="-0.2" style="left:2%;top:760px" viewBox="0 0 100 100"><path d="M10 90 C40 60 60 30 90 10 M30 70 C20 60 18 50 22 40 M30 70 C42 68 52 62 58 54 M50 50 C40 42 38 32 42 22 M50 50 C62 50 70 44 76 36" stroke="#44422D" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>
+</div>
+
+<div class="app" id="app">
+  <nav class="top">
+    <div class="wordmark"><div class="mk">g</div><span class="txt">Goodreads</span></div>
+    <label class="search">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input placeholder="Search books, authors, genres…" aria-label="Search" />
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg>
+    </label>
+    <div class="navbtns">
+      <button class="navbtn" data-toast="My Books"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 5h7a3 3 0 0 1 3 3v12a2 2 0 0 0-2-2H2zM22 5h-7a3 3 0 0 0-3 3v12a2 2 0 0 1 2-2h8z"/></svg><span>My Books</span></button>
+      <button class="navbtn" data-toast="Discover"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/></svg><span>Discover</span></button>
+      <button class="navbtn" id="navJam"><span class="pagebars" style="color:var(--mauve)"><i></i><i></i><i></i></span><span>Book Jam</span></button>
+      <div class="avatar me" style="--s:42px;margin-left:8px">MT</div>
+    </div>
+  </nav>
+
+  <div class="grid">
+    <div class="card cr">
+      <div>
+        <span class="eyebrow">Currently reading</span>
+        <h1>The Women</h1>
+        <div class="serif" style="font-size:18px;color:var(--brown-2)">A Novel</div>
+        <div class="meta">by Kristin Hannah<br/>Historical Fiction · 400 pages</div>
+        <div class="chips"><span class="chip">🎖 Vietnam era</span><span class="chip">💛 Friendship</span><span class="chip">⏱ ~5h left</span></div>
+      </div>
+      <div class="cover-wrap" id="crCover"></div>
+      <div class="cr-bottom">
+        <div class="ring">
+          <svg width="118" height="118" viewBox="0 0 118 118"><defs><linearGradient id="rg" x1="0" x2="1"><stop offset="0" stop-color="#A07C78"/><stop offset="1" stop-color="#755151"/></linearGradient></defs><circle cx="59" cy="59" r="50" stroke="#CDB792" stroke-width="11" fill="none"/><circle id="ringFill" cx="59" cy="59" r="50" stroke="url(#rg)" stroke-width="11" fill="none" stroke-linecap="round" stroke-dasharray="314.16" stroke-dashoffset="314.16"/></svg>
+          <div class="val"><div><b><span id="ringNum">0</span>%</b><small>Completed</small></div></div>
+        </div>
+        <div class="cr-actions">
+          <div class="pages-left">Page <b id="pgNow">0</b> of 400</div>
+          <div class="row">
+            <button class="btn primary" data-toast="Progress updated to p. 249">✎ Update progress</button>
+            <button class="iconbtn" data-toast="More options" aria-label="More">⋯</button>
+          </div>
+          <button class="chip" id="jamThis" style="align-self:flex-start"><span class="pagebars"><i></i><i></i><i></i></span> Read this together</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card challenge">
+      <div class="head">
+        <div><span class="eyebrow ghost">2026 Reading Challenge</span>
+          <div style="margin-top:20px" class="big-num"><span id="chNum">0</span> <small>/ 50 books</small></div></div>
+        <div class="iconbtn" aria-hidden="true">📅</div>
+      </div>
+      <div class="bar"><div class="fill" id="chFill"></div></div>
+      <div class="scale"><span>0</span><span>25</span><span>50</span></div>
+      <div class="ahead">▲ 3 books ahead of schedule</div>
+      <div class="ministats">
+        <div><b data-count="11240">0</b><span>pages</span></div>
+        <div><b data-count="41">0</b><span>day streak 🔥</span></div>
+        <div><b data-count="4.1" data-dec="1">0</b><span>avg rating</span></div>
+      </div>
+      <button class="btn ghost" style="width:100%;margin-top:18px" data-toast="Opening your challenge">View challenge →</button>
+    </div>
+
+    <div class="card activity">
+      <h3>Friend activity <span class="chip">All ▾</span></h3>
+      <div id="activity"></div>
+    </div>
+  </div>
+
+  <section class="block" id="jamSection">
+    <div class="shead reveal">
+      <div><h2>Book Jam</h2><p>Read together in real time, like a listening party for pages.</p></div>
+      <div class="jam-how"><span class="chip">📍 Live page sync</span><span class="chip">💬 Chapter chats</span><span class="chip">🔗 Invite with a code</span></div>
+    </div>
+    <div class="jam">
+      <div class="card jam-hero reveal">
+        <div class="jam-art" aria-hidden="true">
+          <div class="orbit"></div><div class="orbit o2"></div>
+          <div class="center" id="jamCenterCover"></div>
+          <div class="avatar orb" style="--s:44px;background:#66634C">PS</div>
+          <div class="avatar orb" style="--s:38px;background:#7A6250">JT</div>
+          <div class="avatar orb" style="--s:40px;background:#72583E">ML</div>
+          <div class="avatar orb" style="--s:36px;background:#755151">DK</div>
+        </div>
+        <span class="eyebrow" style="align-self:flex-start"><span class="pagebars"><i></i><i></i><i></i></span> New · Book Jam</span>
+        <h2 style="margin-top:18px">Your book club,<br/><em>live.</em></h2>
+        <p>Start a Jam and friends follow along page by page. See where everyone is, react to big moments, and unlock discussion at chapter checkpoints. No spoilers.</p>
+        <div class="actions">
+          <button class="btn primary" id="startJam">▶ Start a Jam</button>
+          <button class="btn ghost" id="enterCode">Enter jam code</button>
+          <form class="codeform" id="codeForm"><input id="codeIn" placeholder="JAM-XXXX" aria-label="Jam code" maxlength="8" autocomplete="off" /><button class="btn primary" type="submit">Join</button></form>
+        </div>
+      </div>
+      <div class="jam-list" id="jamList"></div>
+    </div>
+  </section>
+
+  <section class="block" id="shelfSection">
+    <div class="shead reveal">
+      <div><h2>Your shelf</h2><p>Hover to pull a book out. Click to turn it around.</p></div>
+      <div class="ctrls"><button class="btn ghost" id="reshelve">↻ Reshelve</button></div>
+    </div>
+    <div class="shelf-wrap reveal">
+      <div class="shelf-tabs"><button class="on">Read · 34</button><button>Favorites</button><button>Want to read</button></div>
+      <div class="shelf" id="shelf"></div>
+      <div class="plank"></div>
+      <div class="detail" id="detail"></div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="shead reveal">
+      <div><h2>Picked for you</h2><p>Because you loved <i>Lessons in Chemistry</i> and <i>The Women</i>.</p></div>
+      <div class="ctrls"><button class="iconbtn" id="prev" aria-label="Previous">‹</button><button class="iconbtn" id="next" aria-label="Next">›</button></div>
+    </div>
+    <div class="carousel" id="carousel"></div>
+  </section>
+
+  <footer>Goodreads redesign concept · prototype with mock data</footer>
+</div>
+
+<div id="jamModal" role="dialog" aria-modal="true" aria-label="Book Jam session">
+  <div class="backdrop" id="jamBackdrop"></div>
+  <div class="jpanel" id="jpanel">
+    <button class="iconbtn jclose" id="jamClose" aria-label="Close">✕</button>
+    <div class="jmain">
+      <div class="jtop j-in">
+        <div id="jamCover"></div>
+        <div class="ti">
+          <span class="livepill"><span class="dot"></span> Live · <span id="jamTimer">00:00</span></span>
+          <h3 id="jamTitle">The Women</h3>
+          <div class="sub" id="jamSub">Hosted by you</div>
+          <div class="jmeta">
+            <span class="conn" id="connStatus"><i></i> Offline demo</span>
+            <label class="namefld">You are <input id="nameIn" maxlength="30" aria-label="Your name" /></label>
+            <label class="botsT" id="botsWrap"><input type="checkbox" id="botsToggle" /> Demo friends</label>
+          </div>
+        </div>
+      </div>
+      <div class="track-card j-in">
+        <div class="track-head"><b>Where everyone is</b><span class="sub" id="trackMeta">5 reading</span></div>
+        <div class="track" id="track"><div class="host-fill" id="hostFill"></div></div>
+        <div class="track-foot"><span>p. 1</span><span>◆ discussion checkpoints</span><span id="trackEnd">p. 400</span></div>
+      </div>
+      <div class="bring-banner" id="bringBanner"><span>⟲</span><span class="sp"><b id="bringWho">Host</b> is on <b id="bringPage">p. 1</b> and asked everyone to jump there.</span><button class="btn primary" id="bringAccept">Jump there</button><button class="btn ghost" id="bringDismiss">Not now</button></div>
+      <div class="jcontrols j-in">
+        <button class="btn primary" id="syncBtn">⟲ Sync to host's page</button>
+        <button class="btn ghost" id="pauseBtn">❚❚ Pause for discussion</button>
+        <button class="btn ghost" id="turnBtn">Turn page →</button>
+      </div>
+      <div class="jrow j-in">
+        <div class="people"><h5>In this jam</h5><div id="people"></div></div>
+        <div class="invite"><h5>Invite friends</h5>
+          <div class="inv-body"><div class="qr" id="qr"></div>
+            <div><div class="sub" style="font-size:12px">Jam code</div><div class="code" id="jamCode">JAM-7K4Q</div><button class="btn ghost" id="copyCode">🔗 Copy link</button></div>
+          </div>
+          <div class="invlink" id="invLink">goodreads.example/jam</div>
+          <div class="inv-note">Messages are tagged with the sender's page. Anyone who hasn't reached that page sees a locked placeholder until they catch up.</div>
+        </div>
+      </div>
+    </div>
+    <div class="jside">
+      <h5 class="j-in">Jam chat · spoiler-safe</h5>
+      <div class="stream j-in" id="stream"></div>
+      <div class="reacts j-in" id="reacts"><button aria-label="love">🤎</button><button aria-label="shocked">😱</button><button aria-label="crying">😭</button><button aria-label="fire">🔥</button><button aria-label="book">📖</button><button aria-label="clap">👏</button></div>
+      <form class="compose j-in" id="compose"><input id="composeIn" placeholder="Say something about this page…" /><button class="btn dark" type="submit">Send</button></form>
+    </div>
+    <div class="floaters" id="floaters"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script>
+(() => {
+"use strict";
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const hasGSAP = typeof window.gsap !== "undefined";
+if (hasGSAP && window.ScrollTrigger) gsap.registerPlugin(ScrollTrigger);
+
+/* ---------- Mock data ---------- */
+const BOOKS = {
+  women:{t:"The Women",a:"Kristin Hannah",c:["#8C6E50","#5A4530"],fg:"#FFF9F3",m:"sun",pages:400,g:"Historical Fiction",r:4.6,d:"A young nurse goes to Vietnam, and comes home to a country that would rather forget the women who served."},
+  circus:{t:"The Night Circus",a:"Erin Morgenstern",c:["#443223","#2A1F15"],fg:"#DBC4A5",m:"tent",g:"Fantasy",r:4.0,d:"Two young illusionists are bound to a magical duel, staged inside a circus that only opens at night."},
+  bee:{t:"The Bee Sting",a:"Paul Murray",c:["#C9A877","#8C6E50"],fg:"#2A1F15",m:"stripe",g:"Literary Fiction",r:4.1,d:"An Irish family comes apart, each of them hiding something. Funny and heartbreaking at once."},
+  octo:{t:"Remarkably Bright Creatures",a:"Shelby Van Pelt",c:["#7C7960","#55533F"],fg:"#FFF9F3",m:"waves",pages:360,g:"Contemporary",r:4.4,d:"A widow on the aquarium night shift strikes up a friendship with a very clever giant Pacific octopus."},
+  evelyn:{t:"The Seven Husbands of Evelyn Hugo",a:"Taylor Jenkins Reid",c:["#E2CDB0","#C2A59A"],fg:"#5E3F3F",m:"ring",g:"Historical Fiction",r:4.5,d:"A reclusive Hollywood icon finally tells the truth about her glamorous, scandalous life."},
+  overstory:{t:"The Overstory",a:"Richard Powers",c:["#5C5A3E","#3D3B28"],fg:"#ECDCC2",m:"tree",g:"Literary Fiction",r:4.2,d:"Nine strangers are drawn together by trees in a sweeping ecological epic."},
+  tomorrow:{t:"Tomorrow, and Tomorrow, and Tomorrow",a:"Gabrielle Zevin",c:["#8E6464","#5E3F3F"],fg:"#FFF9F3",m:"wave2",g:"Fiction",r:4.2,d:"Two friends make video games together, and build a lifelong, complicated creative partnership."},
+  sea:{t:"Sea of Tranquility",a:"Emily St. John Mandel",c:["#4E4A3A","#2F2D20"],fg:"#DBC4A5",m:"moon",g:"Science Fiction",r:4.0,d:"A novel of time travel and metaphysics, spanning centuries and a colony on the moon."},
+  lessons:{t:"Lessons in Chemistry",a:"Bonnie Garmus",c:["#D4B888","#A08670"],fg:"#2A1F15",m:"atom",g:"Fiction",r:4.3,d:"Chemist Elizabeth Zott becomes the unlikely star of a 1960s TV cooking show."},
+  midnight:{t:"The Midnight Library",a:"Matt Haig",c:["#66634C","#3D3B28"],fg:"#ECDCC2",m:"moon",g:"Fantasy",r:4.0,d:"Between life and death there is a library, and every book in it is a life you could have lived."},
+  circe:{t:"Circe",a:"Madeline Miller",c:["#8A5A4A","#4E3434"],fg:"#F1E3CC",m:"sun",g:"Mythology",r:4.3,d:"The witch of Aiaia tells her own story, from the Titans to Odysseus."},
+  hail:{t:"Project Hail Mary",a:"Andy Weir",c:["#3B3A28","#22211A"],fg:"#D4B888",m:"star",g:"Science Fiction",r:4.5,d:"A lone astronaut wakes up with no memory and a mission to save Earth."},
+  klara:{t:"Klara and the Sun",a:"Kazuo Ishiguro",c:["#E2CFAF","#B9997A"],fg:"#443223",m:"sun",g:"Literary Fiction",r:3.9,d:"An Artificial Friend watches the world from a shop window, waiting to be chosen."},
+  pachinko:{t:"Pachinko",a:"Min Jin Lee",c:["#6B4545","#3E2A2A"],fg:"#E9D2B8",m:"ring",g:"Historical Fiction",r:4.3,d:"Four generations of a Korean family in Japan, bound by love and resilience."}
+};
+const PEOPLE = {
+  me:{n:"You",i:"MT",c:"linear-gradient(135deg,#755151,#443223)"},
+  priya:{n:"Priya S.",i:"PS",c:"#66634C"},
+  james:{n:"James T.",i:"JT",c:"#7A6250"},
+  maya:{n:"Maya L.",i:"ML",c:"#72583E"},
+  daniel:{n:"Daniel K.",i:"DK",c:"#755151"},
+  ana:{n:"Ana R.",i:"AR",c:"#44422D"}
+};
+
+const motifSVG = (m, fg) => {
+  const s = `stroke="${fg}" fill="none" stroke-width="2"`;
+  switch (m) {
+    case "sun": return `<svg width="80" height="80" viewBox="0 0 80 80"><circle cx="40" cy="40" r="16" ${s}/>${[...Array(12)].map((_, i) => { const a = i * Math.PI / 6; return `<line x1="${(40 + Math.cos(a) * 22).toFixed(1)}" y1="${(40 + Math.sin(a) * 22).toFixed(1)}" x2="${(40 + Math.cos(a) * 32).toFixed(1)}" y2="${(40 + Math.sin(a) * 32).toFixed(1)}" ${s}/>`; }).join("")}</svg>`;
+    case "moon": return `<svg width="80" height="80" viewBox="0 0 80 80"><path d="M50 14a26 26 0 1 0 16 40A22 22 0 0 1 50 14z" ${s}/><circle cx="20" cy="18" r="1.5" fill="${fg}"/><circle cx="62" cy="22" r="1" fill="${fg}"/></svg>`;
+    case "tent": return `<svg width="80" height="80" viewBox="0 0 80 80"><path d="M10 64 L40 16 L70 64 Z M40 16 L40 64 M25 64 L40 30 L55 64" ${s}/></svg>`;
+    case "stripe": return `<svg width="90" height="90" viewBox="0 0 90 90">${[0,1,2,3,4].map(i => `<path d="M0 ${20 + i * 14} Q45 ${10 + i * 14} 90 ${20 + i * 14}" ${s}/>`).join("")}</svg>`;
+    case "waves": return `<svg width="90" height="70" viewBox="0 0 90 70"><path d="M45 10c10 0 16 8 16 18s-6 14-6 20 8 6 10 14M45 10c-10 0-16 8-16 18s6 14 6 20-8 6-10 14M40 40c-4 8-14 10-20 22M50 40c4 8 14 10 20 22" ${s}/></svg>`;
+    case "ring": return `<svg width="80" height="80" viewBox="0 0 80 80"><circle cx="40" cy="40" r="26" ${s}/><circle cx="40" cy="40" r="18" ${s} stroke-dasharray="3 4"/></svg>`;
+    case "tree": return `<svg width="80" height="90" viewBox="0 0 80 90"><path d="M40 86V40M40 52L24 36M40 46L58 30M40 62L22 54M40 58L60 50" ${s}/><circle cx="40" cy="30" r="22" ${s}/></svg>`;
+    case "wave2": return `<svg width="90" height="80" viewBox="0 0 90 80"><path d="M0 50 C15 20 30 20 45 50 S75 80 90 50" ${s}/><path d="M0 60 C15 30 30 30 45 60 S75 90 90 60" ${s}/></svg>`;
+    case "atom": return `<svg width="80" height="80" viewBox="0 0 80 80"><ellipse cx="40" cy="40" rx="30" ry="11" ${s}/><ellipse cx="40" cy="40" rx="30" ry="11" ${s} transform="rotate(60 40 40)"/><ellipse cx="40" cy="40" rx="30" ry="11" ${s} transform="rotate(-60 40 40)"/><circle cx="40" cy="40" r="3" fill="${fg}"/></svg>`;
+    case "star": return `<svg width="80" height="80" viewBox="0 0 80 80"><path d="M40 10l6 22 22 2-18 12 6 22-16-14-16 14 6-22-18-12 22-2z" ${s}/></svg>`;
+    default: return "";
+  }
+};
+function cover(key, w, h) {
+  const b = BOOKS[key];
+  const longest = Math.max(...b.t.split(/\s+/).map(s => s.length));
+  const fs = Math.max(8, Math.min(w * (b.t.length > 22 ? 0.1 : 0.14), (w * 0.8) / (longest * 0.72)));
+  return `<div class="cover" style="width:${w}px;height:${h}px;--fg:${b.fg};background:linear-gradient(160deg,${b.c[0]},${b.c[1]});font-size:${Math.max(8, w * .075)}px">
+    <div class="ct" style="font-size:${fs}px">${b.t}</div>
+    <div class="motif" style="transform:translate(-50%,-50%) scale(${Math.min(1.4, w / 120)})">${motifSVG(b.m, b.fg)}</div>
+    <div class="ca">${b.a}</div></div>`;
+}
+const av = (p, s = 40) => `<div class="avatar" style="--s:${s}px;background:${PEOPLE[p].c}">${PEOPLE[p].i}</div>`;
+const stars = n => "★".repeat(n) + `<i>${"★".repeat(5 - n)}</i>`;
+
+/* ---------- Toast ---------- */
+const toastEl = $("#toast");
+function toast(msg) {
+  toastEl.textContent = msg;
+  if (!hasGSAP) { toastEl.style.opacity = 1; setTimeout(() => toastEl.style.opacity = 0, 1800); return; }
+  gsap.killTweensOf(toastEl);
+  gsap.fromTo(toastEl, {opacity: 0, y: 20}, {opacity: 1, y: 0, duration: .35, ease: "back.out(2)"});
+  gsap.to(toastEl, {opacity: 0, y: 10, delay: 2, duration: .3});
+}
+
+/* ---------- Static renders ---------- */
+$("#crCover").innerHTML = cover("women", 150, 228);
+$("#jamCenterCover").innerHTML = cover("women", 92, 138);
+
+const ACT = [["priya","rated","women",5,"2h"],["james","rated","bee",4,"5h"],["maya","started a Jam on","octo",0,"1d"],["daniel","rated","circus",4,"2d"]];
+$("#activity").innerHTML = ACT.map(([p, v, b, s, t]) => `<div class="act">${av(p, 38)}<div class="t"><div class="n">${PEOPLE[p].n}<small>${t} ago</small></div><div class="b">${v} <b style="font-weight:500">${BOOKS[b].t}</b></div>${s ? `<div class="stars">${stars(s)}</div>` : `<div class="stars" style="color:var(--terra);font-weight:600;font-size:12px">▶ Jamming now</div>`}</div></div>`).join("")
+  + `<button class="btn ghost" style="width:100%;margin-top:14px" data-toast="Showing all friend activity">View all activity →</button>`;
+
+const JAMS = [
+  {host:"priya", book:"women", ppl:["priya","james","ana"], page:212, ch:"Ch. 13"},
+  {host:"maya", book:"octo", ppl:["maya","daniel"], page:88, ch:"Ch. 7"}
+];
+$("#jamList").innerHTML = JAMS.map((j, idx) => `<div class="card jamcard reveal">
+  ${cover(j.book, 64, 96)}
+  <div class="info"><span class="live"><span class="dot"></span> Live · ${j.ch}</span>
+    <h4>${BOOKS[j.book].t}</h4>
+    <div style="display:flex;align-items:center;gap:10px"><div class="stack">${j.ppl.map(p => av(p, 26)).join("")}</div><span class="sub" style="font-size:12.5px">${PEOPLE[j.host].n.split(" ")[0]}'s jam · ${j.ppl.length} reading</span></div>
+    <div class="mini-track">${j.ppl.map((p, i) => `<span style="left:${Math.min(96, (j.page / BOOKS[j.book].pages) * 100 - i * 4)}%;background:${PEOPLE[p].c}"></span>`).join("")}</div>
+  </div>
+  <button class="btn dark join" data-idx="${idx}">Join</button></div>`).join("")
+  + `<div class="card jamcard reveal" style="background:var(--paper);border-style:dashed">
+      <div class="avatar" style="--s:48px;background:var(--terra-l);color:var(--terra-d);border:none;font-size:22px">＋</div>
+      <div class="info"><h4 style="font-size:17px">Jam a book from your shelf</h4><div class="sub" style="font-size:13px">Pick any book and we'll make an invite code.</div></div>
+      <button class="btn ghost" id="jamFromShelf">Choose</button></div>`;
+
+const picks = ["circus","bee","octo","evelyn","overstory","circe","hail","klara","pachinko"];
+const whys = ["Friends loved it","Like The Women","Cozy & clever","92% match","Book club pick","Mythic retelling","Can't put down","Quiet & moving","Family saga"];
+$("#carousel").innerHTML = picks.map((k, i) => `<div class="pick reveal-pick">${cover(k, 170, 250)}<div class="pt">${BOOKS[k].t}</div><div class="pa">${BOOKS[k].a}</div><span class="why">${whys[i]}</span></div>`).join("");
+$("#prev").onclick = () => $("#carousel").scrollBy({left: -400, behavior: "smooth"});
+$("#next").onclick = () => $("#carousel").scrollBy({left: 400, behavior: "smooth"});
+$$(".pick").forEach((el, i) => el.addEventListener("click", () => toast(`Added “${BOOKS[picks[i]].t}” to Want to Read`)));
+$$("[data-toast]").forEach(el => el.addEventListener("click", () => toast(el.dataset.toast)));
+
+/* ---------- Bookshelf ---------- */
+const shelfBooks = ["midnight","sea","tomorrow","octo","lessons","bee","circus","circe","evelyn","overstory","hail","klara","pachinko","women"];
+const shelf = $("#shelf");
+let shelfHTML = `<div class="decor-item bookend"></div>`;
+shelfBooks.forEach((k, i) => {
+  const b = BOOKS[k];
+  const w = 36 + ((i * 7) % 18), h = 172 + ((i * 37) % 62);
+  shelfHTML += `<div class="spine" data-k="${k}" style="--w:${w}px;--h:${h}px;--bg:linear-gradient(90deg,${b.c[1]},${b.c[0]} 45%,${b.c[1]});--fg:${b.fg}" title="${b.t}">
+    <div class="band"></div><div class="st">${b.t}</div><div class="sa">${b.a.split(" ").slice(-1)[0]}</div><div class="band b2"></div></div>`;
+  if (i === 5) shelfHTML += `<div class="decor-item plant"><div class="lf" style="transform:rotate(-28deg)"></div><div class="lf" style="transform:rotate(4deg);height:66px"></div><div class="lf" style="transform:rotate(30deg)"></div><div class="pot"></div></div>`;
+  if (i === 10) shelfHTML += `<div class="decor-item stack-flat"><i style="width:120px;background:#A08670"></i><i style="width:110px;background:#44422D"></i><i style="width:126px;background:#755151"></i></div>`;
+});
+shelfHTML += `<div class="decor-item bookend" style="transform:scaleX(-1)"></div>`;
+shelf.innerHTML = shelfHTML;
+const spines = $$(".spine", shelf);
+const detail = $("#detail");
+let openSpine = null;
+spines.forEach(sp => {
+  sp.addEventListener("mouseenter", () => { if (sp !== openSpine && hasGSAP) gsap.to(sp, {y: -22, rotation: -3, scale: 1.04, duration: .35, ease: "power3.out", overwrite: "auto"}); });
+  sp.addEventListener("mouseleave", () => { if (sp !== openSpine && hasGSAP) gsap.to(sp, {y: 0, rotation: 0, scale: 1, duration: .6, ease: "elastic.out(1,.5)", overwrite: "auto"}); });
+  sp.addEventListener("click", e => { e.stopPropagation(); openDetail(sp); });
+});
+$$(".act").forEach(el => {
+  el.addEventListener("mouseenter", () => hasGSAP && !reduce && gsap.to(el, {x: 5, duration: .3, ease: "power2.out"}));
+  el.addEventListener("mouseleave", () => hasGSAP && !reduce && gsap.to(el, {x: 0, duration: .4, ease: "power2.out"}));
+});
+function openDetail(sp) {
+  const k = sp.dataset.k, b = BOOKS[k];
+  if (openSpine && openSpine !== sp) closeDetail(true);
+  openSpine = sp;
+  detail.innerHTML = `<button class="iconbtn close" aria-label="Close">✕</button>${cover(k, 110, 165)}
+    <div style="flex:1;min-width:0"><span class="chip" style="font-size:11px">${b.g}</span><h4 style="margin-top:8px;padding-right:20px">${b.t}</h4><div class="sub" style="font-size:12.5px">${b.a}</div>
+    <div class="stars" style="font-size:14px">${stars(Math.round(b.r))} <span class="sub" style="font-size:12px">${b.r.toFixed(1)}</span></div>
+    <p>${b.d}</p><div class="row"><button class="btn primary" style="padding:8px 12px;font-size:12px" data-jam="${k}">▶ Jam it</button><button class="btn ghost" style="padding:8px 12px;font-size:12px" data-rev>Review</button></div></div>`;
+  const wrap = $(".shelf-wrap").getBoundingClientRect(), r = sp.getBoundingClientRect();
+  const dw = Math.min(330, wrap.width - 24);
+  let left = r.left - wrap.left + r.width + 12, fromLeft = true;
+  if (left + dw > wrap.width - 10) { left = r.left - wrap.left - dw - 12; fromLeft = false; }
+  left = Math.max(10, Math.min(left, wrap.width - dw - 10));
+  detail.style.cssText = `display:flex;width:${dw}px;left:${left}px;top:${Math.max(10, r.top - wrap.top - 30)}px;transform-origin:${fromLeft ? "left" : "right"} center`;
+  $(".close", detail).onclick = e => { e.stopPropagation(); closeDetail(); };
+  $("[data-jam]", detail).onclick = () => { closeDetail(); startJam(k); };
+  $("[data-rev]", detail).onclick = () => toast(`Writing a review for “${b.t}”`);
+  if (!hasGSAP || reduce) return;
+  const tl = gsap.timeline();
+  tl.to(sp, {rotationY: fromLeft ? 80 : -80, y: -30, duration: .35, ease: "power2.in", transformPerspective: 600, overwrite: "auto"})
+    .fromTo(detail, {rotationY: fromLeft ? -90 : 90, opacity: 0, transformPerspective: 900}, {rotationY: 0, opacity: 1, duration: .65, ease: "back.out(1.4)"}, "-=.05")
+    .from($$(".chip,h4,.sub,.stars,p,.row", detail), {y: 10, opacity: 0, stagger: .04, duration: .3}, "-=.35");
+}
+function closeDetail(instant) {
+  const sp = openSpine; openSpine = null;
+  if (!hasGSAP || reduce) { detail.style.display = "none"; return; }
+  if (sp) gsap.to(sp, {rotationY: 0, y: 0, rotation: 0, scale: 1, duration: .5, ease: "power3.out", overwrite: "auto"});
+  if (instant) { detail.style.display = "none"; return; }
+  gsap.to(detail, {rotationY: -90, opacity: 0, duration: .3, ease: "power2.in", onComplete: () => { if (!openSpine) detail.style.display = "none"; }});
+}
+document.addEventListener("click", e => { if (openSpine && !detail.contains(e.target) && !e.target.closest(".spine")) closeDetail(); });
+
+function dropSpines() {
+  if (!hasGSAP || reduce) return;
+  gsap.fromTo(spines, {y: -340, rotation: () => gsap.utils.random(-25, 25), opacity: 0},
+    {y: 0, rotation: 0, opacity: 1, duration: 1.1, ease: "bounce.out", stagger: {each: .07, from: "random"}, overwrite: "auto"});
+  gsap.fromTo(".shelf .decor-item", {y: -200, opacity: 0}, {y: 0, opacity: 1, duration: .9, ease: "bounce.out", stagger: .15, delay: .5});
+}
+$("#reshelve").onclick = () => { closeDetail(true); dropSpines(); };
+$("#jamFromShelf").onclick = () => { $("#shelfSection").scrollIntoView({behavior: reduce ? "auto" : "smooth"}); toast("Click any book, then “Jam it”"); };
+
+/* ---------- Intro: page flip ---------- */
+const PAGE_COUNT = 6;
+const leavesEl = $("#leaves");
+const lorem = ["She turned the page and the room seemed to turn with her.", "Somewhere a clock kept time for stories not yet read.", "The margins were full of someone else’s pencil notes.", "Every library is a map of the people who loved it.", "Chapter after chapter, the light moved across the floor.", "And then, the shelf, waiting."];
+for (let i = 0; i < PAGE_COUNT; i++) {
+  const lf = document.createElement("div");
+  lf.className = "leaf";
+  lf.style.zIndex = 50 - i;
+  lf.style.transform = `translateZ(${1 + (PAGE_COUNT - i) * 0.6}px)`;
+  const lines = n => [...Array(n)].map((_, j) => `<div class="ln" style="width:${70 + ((i * 13 + j * 17) % 30)}%"></div>`).join("");
+  lf.innerHTML = `<div class="face front"><div class="shade"></div><div class="pagetext"><div class="orn">${["I","II","III","IV","V","VI"][i]}</div>${lorem[i]}${lines(9)}</div><div class="pagenum">${i * 2 + 3}</div></div>
+                  <div class="face back"><div class="shade" style="transform:scaleX(-1)"></div><div class="pagetext">${lines(4)}<em>${lorem[(i + 2) % 6]}</em>${lines(7)}</div><div class="pagenum">${i * 2 + 4}</div></div>`;
+  leavesEl.appendChild(lf);
+}
+const leaves = $$(".leaf", leavesEl);
+
+let introDone = false, introTL = null;
+function finishIntro() {
+  if (introDone) return; introDone = true;
+  document.body.classList.remove("locked");
+  const intro = $("#intro");
+  if (hasGSAP && !reduce) { if (introTL) introTL.kill(); gsap.to(intro, {autoAlpha: 0, duration: .6, onComplete: () => intro.remove()}); }
+  else intro.remove();
+  enterHome();
+}
+function runIntro() {
+  if (!hasGSAP || reduce) { finishIntro(); return; }
+  const intro = $("#intro");
+  for (let i = 0; i < 26; i++) {
+    const d = document.createElement("div"); d.className = "dust"; intro.appendChild(d);
+    gsap.set(d, {x: gsap.utils.random(0, innerWidth), y: gsap.utils.random(0, innerHeight), scale: gsap.utils.random(.5, 1.8)});
+    gsap.to(d, {opacity: gsap.utils.random(.2, .7), y: "-=" + gsap.utils.random(60, 160), x: "+=" + gsap.utils.random(-40, 40), duration: gsap.utils.random(3, 6), repeat: -1, yoyo: true, ease: "sine.inOut", delay: Math.random() * 2});
+  }
+  introTL = gsap.timeline({onComplete: finishIntro});
+  introTL.from("#book3d", {y: 80, rotationX: 60, scale: .7, opacity: 0, duration: 1, ease: "power3.out"})
+    .to("#book3d", {rotationX: 22, duration: 2.6, ease: "sine.inOut"}, "<.4");
+  leaves.forEach((lf, i) => {
+    const at = 0.9 + i * 0.3, d = 1.0 - i * .07;
+    introTL.to(lf, {rotationY: -180, duration: d, ease: "power2.inOut", onStart: () => { lf.style.zIndex = 51 + i; }}, at)
+      .to(lf, {z: 16, duration: d / 2, ease: "sine.out"}, at)
+      .to(lf, {z: 1 + (PAGE_COUNT + i + 1) * 0.6, duration: d / 2, ease: "sine.in"}, at + d / 2)
+      .to($$(".shade", lf), {opacity: 1, duration: d / 2, yoyo: true, repeat: 1, ease: "sine.inOut"}, at);
+  });
+  introTL.to(".intro-word", {opacity: 1, y: -6, duration: .8, ease: "power2.out"}, 1.2)
+    .to(".intro-sub", {opacity: 1, duration: .6}, 1.6)
+    .to("#book3d", {scale: 1.9, rotationX: 0, opacity: 0, duration: .9, ease: "power3.in"}, 3.75)
+    .to(".intro-word,.intro-sub", {opacity: 0, y: -20, duration: .4}, "<");
+}
+$("#skipIntro").addEventListener("click", finishIntro);
+document.addEventListener("keydown", e => { if (!introDone && (e.key === "Enter" || e.key === "Escape")) finishIntro(); });
+
+/* ---------- Homepage entrance + scroll ---------- */
+const RING_C = 2 * Math.PI * 50, PROGRESS = 62;
+function setFinalStates() {
+  $("#ringFill").style.strokeDashoffset = RING_C * (1 - PROGRESS / 100);
+  $("#ringNum").textContent = PROGRESS; $("#pgNow").textContent = 248;
+  $("#chFill").style.width = "68%"; $("#chNum").textContent = 34;
+  $$("[data-count]").forEach(el => el.textContent = (+el.dataset.count).toLocaleString());
+  $$(".jam-art .orb").forEach((o, i) => { const a = i * Math.PI / 2, r = i % 2 ? 100 : 140; o.style.transform = `translate(${150 + Math.cos(a) * r - 20}px,${150 + Math.sin(a) * r - 20}px)`; });
+}
+function countTo(el, to, dec = 0, dur = 1.6) {
+  const o = {v: 0};
+  return gsap.to(o, {v: to, duration: dur, ease: "power2.out", onUpdate: () => el.textContent = dec ? o.v.toFixed(dec) : Math.round(o.v).toLocaleString()});
+}
+function enterHome() {
+  if (!hasGSAP || reduce) { setFinalStates(); return; }
+  const tl = gsap.timeline({defaults: {ease: "power3.out"}});
+  tl.from("nav.top > *", {y: -24, opacity: 0, stagger: .08, duration: .6})
+    .from(".grid > .card", {y: 50, opacity: 0, rotationX: 8, transformPerspective: 800, stagger: .12, duration: .9}, "-=.3")
+    .from("#crCover .cover", {rotationY: -70, x: 40, opacity: 0, transformPerspective: 700, duration: 1}, "-=.7")
+    .to("#ringFill", {strokeDashoffset: RING_C * (1 - PROGRESS / 100), duration: 1.8, ease: "power2.inOut"}, "-=.6")
+    .add(countTo($("#ringNum"), PROGRESS, 0, 1.8), "<")
+    .add(countTo($("#pgNow"), 248, 0, 1.8), "<")
+    .to("#chFill", {width: "68%", duration: 1.8, ease: "expo.out"}, "<.1")
+    .add(countTo($("#chNum"), 34, 0, 1.6), "<")
+    .from(".act", {x: 30, opacity: 0, stagger: .1, duration: .6}, "<");
+  $$("[data-count]").forEach(el => tl.add(countTo(el, +el.dataset.count, +(el.dataset.dec || 0), 1.6), "<"));
+  setupScroll();
+}
+function setupScroll() {
+  if (window.ScrollTrigger) {
+    $$("section .reveal").forEach(el => gsap.from(el, {y: 60, opacity: 0, duration: .9, ease: "power3.out", scrollTrigger: {trigger: el, start: "top 90%"}}));
+    gsap.from(".reveal-pick", {y: 60, opacity: 0, rotation: 3, stagger: .08, duration: .8, ease: "power3.out", scrollTrigger: {trigger: "#carousel", start: "top 92%"}});
+    gsap.set(spines, {opacity: 0}); gsap.set(".shelf .decor-item", {opacity: 0});
+    ScrollTrigger.create({trigger: "#shelf", start: "top 82%", once: true, onEnter: dropSpines});
+    $$(".decor [data-speed]").forEach(el => gsap.to(el, {y: () => +el.dataset.speed * document.body.scrollHeight * .5, ease: "none", scrollTrigger: {start: 0, end: "max", scrub: true, invalidateOnRefresh: true}}));
+    gsap.to("#crCover", {y: -24, ease: "none", scrollTrigger: {trigger: ".cr", start: "top top+=80", end: "bottom top", scrub: true}});
+    gsap.to(".jam-art", {y: 50, rotation: 20, ease: "none", scrollTrigger: {trigger: ".jam-hero", start: "top bottom", end: "bottom top", scrub: true}});
+  } else { dropSpines(); }
+  $$(".jam-art .orb").forEach((o, i) => {
+    const r = i % 2 ? 100 : 140, start = i * 90, st = {a: start};
+    gsap.to(st, {a: start + 360, duration: 18 + i * 4, repeat: -1, ease: "none", onUpdate: () => {
+      const rad = st.a * Math.PI / 180; gsap.set(o, {x: 150 + Math.cos(rad) * r - 20, y: 150 + Math.sin(rad) * r - 20});
+    }});
+  });
+  $$(".pagebars i").forEach((b, i) => gsap.to(b, {height: "100%", duration: .4 + (i % 3) * .15, repeat: -1, yoyo: true, ease: "sine.inOut", delay: (i % 3) * .12}));
+  gsap.to("#jamCenterCover", {y: -8, rotation: 2, duration: 2.6, yoyo: true, repeat: -1, ease: "sine.inOut"});
+}
+/* ================= Book Jam (live sync + offline demo) ================= */
+const modal = $("#jamModal"), panel = $("#jpanel");
+const CHECKPOINTS = [{p: 62, l: "Ch. 5"}, {p: 140, l: "Ch. 10"}, {p: 230, l: "Ch. 14"}, {p: 300, l: "Ch. 19"}, {p: 370, l: "Ch. 24"}];
+const LINES = ["That letter… I was NOT ready 😭", "She is so much braver than she gives herself credit for", "The way these scenes are written, I can practically hear them",
+  "Pausing for tea, keep going without me ☕", "Just caught up! What did I miss?", "No spoilers but the next 20 pages 🔥", "Underlined this whole paragraph. Chills.",
+  "This friendship is everything", "Back! Reading fast to catch up 📖", "This chapter feels like a turning point"];
+const EMOJI = ["🤎","😱","😭","🔥","📖","👏"];
+const AV_COLORS = ["#66634C","#7A6250","#72583E","#755151","#44422D","#5E5A48","#8C6E50","#5E3F3F"];
+const qs = new URLSearchParams(location.search);
+const NET_POSSIBLE = /^https?:$/.test(location.protocol) && "WebSocket" in window;
+const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"}[c]));
+const hashColor = s => AV_COLORS[[...String(s)].reduce((a, c) => (a * 31 + c.charCodeAt(0)) >>> 0, 7) % AV_COLORS.length];
+const initials = n => String(n || "?").split(/\s+/).filter(Boolean).slice(0, 2).map(w => w[0].toUpperCase()).join("") || "?";
+const firstName = n => String(n || "").split(" ")[0];
+
+/* identity: per-tab (sessionStorage) so two tabs are two people; ?name= overrides */
+const me = (() => {
+  let id = sessionStorage.getItem("gr-id"); if (!id) { id = "u-" + Math.random().toString(36).slice(2, 8); sessionStorage.setItem("gr-id", id); }
+  let name = qs.get("name") || sessionStorage.getItem("gr-name") || ("Reader " + (10 + Math.floor(Math.random() * 89)));
+  name = name.slice(0, 30); sessionStorage.setItem("gr-name", name);
+  return {id, name};
+})();
+$("#nameIn").value = me.name;
+
+/* jam: {mode, code, bookKey, pages, hostId, paused, createdAt, members:[{id,name,page,bot,online,color}], cps:[{p,l,open}]} */
+let jam = null, simTimers = [], panelOpen = false;
+const youId = () => jam && (jam.mode === "net" ? me.id : "me");
+const memberById = id => jam.members.find(m => m.id === id);
+const mine = () => memberById(youId());
+const host = () => memberById(jam.hostId) || jam.members[0];
+const isHost = () => jam && jam.hostId === youId();
+const avM = (m, s) => `<div class="avatar" style="--s:${s}px;background:${m.color || hashColor(m.id)}">${esc(initials(m.name))}</div>`;
+
+function qrPattern(seed) {
+  let s = seed % 233280; const rnd = () => (s = (s * 9301 + 49297) % 233280) / 233280;
+  let html = "";
+  for (let y = 0; y < 21; y++) for (let x = 0; x < 21; x++) {
+    const f = (x < 7 && y < 7) ? [0, 0] : (x > 13 && y < 7) ? [14, 0] : (x < 7 && y > 13) ? [0, 14] : null;
+    let on;
+    if (f) { const dx = x - f[0], dy = y - f[1]; on = dx === 0 || dx === 6 || dy === 0 || dy === 6 || (dx >= 2 && dx <= 4 && dy >= 2 && dy <= 4); }
+    else if (x === 7 || y === 7 || (x === 13 && y < 8) || (y === 13 && x < 8)) on = false;
+    else on = rnd() > .5;
+    html += `<i style="background:${on ? "#443223" : "transparent"};border-radius:1px"></i>`;
+  }
+  return html;
+}
+const shareLink = code => (NET_POSSIBLE && jam && jam.mode === "net") ? `${location.origin}${location.pathname}?jam=${code}` : `https://goodreads.example/jam/${code}`;
+function setConn(kind, text) { const el = $("#connStatus"); el.className = "conn " + (kind || ""); el.innerHTML = `<i></i> ${esc(text)}`; }
+
+/* ---------- panel rendering ---------- */
+function setupPanel() {
+  const book = BOOKS[jam.bookKey];
+  $("#jamCode").textContent = jam.code;
+  $("#qr").innerHTML = qrPattern(jam.code.charCodeAt(4) * 997 + jam.code.charCodeAt(5) * 31 + jam.code.charCodeAt(6));
+  $("#invLink").textContent = shareLink(jam.code).replace(/^https?:\/\//, "");
+  $("#jamCover").innerHTML = cover(jam.bookKey, 84, 126);
+  $("#jamTitle").textContent = book.t;
+  $("#trackEnd").textContent = `p. ${jam.pages}`;
+  $("#stream").innerHTML = "";
+  $("#bringBanner").style.display = "none";
+  $("#botsWrap").style.display = jam.mode === "net" ? "" : "none";
+  const track = $("#track");
+  $$(".marker,.checkpoint,.cplabel", track).forEach(n => n.remove());
+  jam.cps.forEach(c => {
+    const el = document.createElement("div"); el.className = "checkpoint" + (c.open ? " done" : ""); el.style.left = (c.p / jam.pages * 100) + "%";
+    el.title = `${c.l} discussion checkpoint (p. ${c.p})`;
+    el.onclick = () => toast(c.open ? `${c.l} discussion is open` : `${c.l} discussion opens when the host reaches p. ${c.p}`);
+    const lb = document.createElement("div"); lb.className = "cplabel"; lb.style.left = el.style.left; lb.textContent = c.l;
+    track.append(el, lb); c.el = el;
+  });
+  renderAll(true);
+}
+function renderAll(instant) {
+  if (!jam) return;
+  const h = host(), you = mine(), book = BOOKS[jam.bookKey];
+  $("#jamSub").textContent = (isHost() ? "Hosted by you" : `Hosted by ${h ? h.name : "…"}`) + " · " + book.a;
+  $("#syncBtn").innerHTML = isHost() ? "⟲ Bring everyone to my page" : `⟲ Sync to ${esc(firstName(h && h.name))}'s page`;
+  $("#pauseBtn").style.display = isHost() ? "" : "none";
+  $("#pauseBtn").innerHTML = jam.paused ? "▶ Resume reading" : "❚❚ Pause for discussion";
+  $("#botsToggle").disabled = !isHost();
+  $("#botsToggle").checked = jam.members.some(m => m.bot);
+  $("#trackMeta").textContent = `${jam.members.length} reading · ${jam.pages} pages${jam.paused ? " · paused" : ""}`;
+  // markers
+  const track = $("#track"), anim = hasGSAP && !reduce && !instant;
+  const ids = new Set(jam.members.map(m => m.id));
+  $$(".marker", track).forEach(el => { if (!ids.has(el.dataset.m)) el.remove(); });
+  jam.members.forEach((m, i) => {
+    let el = $$(".marker", track).find(x => x.dataset.m === m.id), fresh = false;
+    if (!el) { el = document.createElement("div"); el.dataset.m = m.id; el.style.left = (m.page / jam.pages * 100) + "%"; track.appendChild(el); fresh = true; }
+    el.className = "marker" + (m.id === jam.hostId ? " host" : "") + (i % 2 ? " alt" : "");
+    el.innerHTML = `<span class="pg">${m.id === jam.hostId ? "★ " : ""}${esc(m.id === youId() ? "You" : firstName(m.name))} · p.<b>${m.page}</b></span>${avM(m, 32)}`;
+    el.style.opacity = m.online === false ? .45 : 1;
+    const pct = m.page / jam.pages * 100;
+    if (anim && !fresh) gsap.to(el, {left: pct + "%", duration: 1.1, ease: "power2.inOut", overwrite: "auto"});
+    else { el.style.left = pct + "%"; if (fresh && hasGSAP && !reduce) gsap.from(el, {y: -40, opacity: 0, duration: .6, ease: "back.out(2)"}); }
+  });
+  const fp = (h ? h.page : 1) / jam.pages * 100;
+  if (anim) gsap.to("#hostFill", {width: fp + "%", duration: 1.1, ease: "power2.inOut", overwrite: "auto"}); else $("#hostFill").style.width = fp + "%";
+  jam.cps.forEach(c => { if (c.el) { const was = c.el.classList.contains("done"); c.el.classList.toggle("done", !!c.open);
+    if (c.open && !was && !instant && hasGSAP && !reduce) gsap.fromTo(c.el, {scale: 1}, {scale: 1.7, duration: .25, yoyo: true, repeat: 3}); } });
+  // people
+  const hp = h ? h.page : 1;
+  $("#people").innerHTML = jam.members.map(m => {
+    const diff = m.page - hp;
+    const st = m.id === jam.hostId ? `<span class="st" style="background:#C9B08C;color:#443223;font-weight:600">★ Host</span>`
+      : Math.abs(diff) <= 3 ? `<span class="st">In sync</span>` : `<span class="st away">${diff < 0 ? diff : "+" + diff} pg</span>`;
+    const tag = m.id === youId() ? `<span class="tag">you</span>` : m.bot ? `<span class="tag">demo</span>` : m.online === false ? `<span class="tag">away</span>` : "";
+    return `<div class="person${m.online === false ? " off" : ""}">${avM(m, 30)}<div class="nm">${esc(m.id === youId() ? me.name : m.name)}${tag}<small>Page ${m.page}</small></div>${st}</div>`;
+  }).join("");
+}
+function addMsg(msg) {
+  // msg: {id?, from?, name?, page, text?, sys?, locked?}
+  const s = $("#stream");
+  let el = msg.id != null ? s.querySelector(`[data-id="${msg.id}"]`) : null;
+  const replacing = !!el;
+  if (!el) { el = document.createElement("div"); if (msg.id != null) el.dataset.id = msg.id; }
+  const sender = msg.from && jam ? (memberById(msg.from) || {id: msg.from, name: msg.name}) : null;
+  const isMine = msg.from && msg.from === youId();
+  el.className = "msg" + (msg.sys ? " sys" : "") + (isMine ? " mine" : "");
+  if (msg.sys) el.innerHTML = `<div class="bub">${esc(msg.text)}</div>`;
+  else if (msg.locked) el.innerHTML = `${avM(sender, 28)}<div class="bub locked"><small>${esc(msg.name)} · p. ${msg.page}</small>🔒 <b>Spoiler-locked</b> until you reach p. ${msg.page}</div>`;
+  else el.innerHTML = `${avM(sender, 28)}<div class="bub"><small>${esc(isMine ? "You" : msg.name)} · p. ${msg.page}</small>${esc(msg.text)}</div>`;
+  if (!replacing) { s.appendChild(el); while (s.children.length > 12) s.firstElementChild.remove(); }
+  if (hasGSAP && !reduce) {
+    if (replacing) gsap.fromTo($(".bub", el), {filter: "blur(6px)", opacity: .4}, {filter: "blur(0px)", opacity: 1, duration: .6, ease: "power2.out", clearProps: "filter"});
+    else gsap.from(el, {y: 24, opacity: 0, scale: .96, duration: .45, ease: "back.out(1.6)"});
+  }
+}
+function floatEmoji(e, fromOther) {
+  const fl = $("#floaters"); if (!fl || !jam) return;
+  const span = document.createElement("span"); span.textContent = e;
+  const side = $(".jside").getBoundingClientRect(), pr = panel.getBoundingClientRect();
+  span.style.left = ((side.left - pr.left) + 24 + Math.random() * Math.max(40, side.width - 70)) + "px";
+  span.style.top = Math.min(side.bottom - pr.top - 150, pr.height - 150) + panel.scrollTop + "px";
+  fl.appendChild(span);
+  if (!hasGSAP || reduce) { setTimeout(() => span.remove(), 700); return; }
+  const dur = gsap.utils.random(2.2, 3.2);
+  gsap.fromTo(span, {y: 0, opacity: 0, scale: .4}, {y: -gsap.utils.random(240, 400), opacity: 1, scale: fromOther ? gsap.utils.random(.9, 1.2) : gsap.utils.random(1.3, 1.8), duration: dur, ease: "power1.out", onComplete: () => span.remove()});
+  gsap.to(span, {x: gsap.utils.random(-40, 40), rotation: gsap.utils.random(-30, 30), duration: dur / 3, yoyo: true, repeat: 2, ease: "sine.inOut"});
+  gsap.to(span, {opacity: 0, duration: .7, delay: dur - .8});
+}
+let timerIv = null;
+function openPanelAnim() {
+  panelOpen = true;
+  modal.style.display = "block"; document.body.classList.add("locked");
+  clearInterval(timerIv);
+  timerIv = setInterval(() => { if (!jam) return; const s = Math.max(0, Math.floor((Date.now() - jam.createdAt) / 1000)); $("#jamTimer").textContent = `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`; }, 1000);
+  if (hasGSAP && !reduce) {
+    gsap.fromTo("#jamBackdrop", {opacity: 0}, {opacity: 1, duration: .4});
+    gsap.fromTo(panel, {opacity: 0, x: 0, y: 80, xPercent: -50, yPercent: -50, scale: .94, rotationX: 10, transformPerspective: 1200}, {opacity: 1, y: 0, scale: 1, rotationX: 0, duration: .7, ease: "power4.out"});
+    gsap.from($$(".j-in", panel), {y: 24, opacity: 0, stagger: .06, duration: .5, delay: .2, ease: "power3.out"});
+    gsap.from($$(".checkpoint", panel), {scale: 0, stagger: .06, duration: .4, delay: .4, ease: "back.out(3)"});
+  } else if (hasGSAP) { gsap.set(panel, {xPercent: -50, yPercent: -50, x: 0, y: 0, opacity: 1}); gsap.set("#jamBackdrop", {opacity: 1}); }
+}
+function closePanel(instant, skipLeave) {
+  simTimers.forEach(t => { clearInterval(t); clearTimeout(t); }); simTimers = [];
+  clearInterval(timerIv);
+  if (jam && jam.mode === "net" && !skipLeave) netSend({type: "leave"});
+  jam = null; panelOpen = false;
+  if (qs.get("jam")) history.replaceState(null, "", location.pathname + (qs.get("name") ? "?name=" + encodeURIComponent(qs.get("name")) : ""));
+  const done = () => { modal.style.display = "none"; document.body.classList.remove("locked"); $("#floaters").innerHTML = ""; };
+  if (hasGSAP && !reduce && instant !== true) {
+    gsap.to(panel, {opacity: 0, y: 60, scale: .95, duration: .35, ease: "power2.in"});
+    gsap.to("#jamBackdrop", {opacity: 0, duration: .35, onComplete: done});
+  } else done();
+  refreshLiveJams();
+}
+
+/* ---------- offline demo mode (file:// or no server) ---------- */
+function openSim(opts) {
+  if (jam) closePanel(true);
+  const bookKey = opts.book || "women", book = BOOKS[bookKey], pages = book.pages || 360;
+  const asHost = opts.mode !== "join";
+  const hostId = asHost ? "me" : opts.host;
+  const ids = asHost ? ["me", "priya", "james", "maya", "daniel"] : [...opts.ppl, "me"];
+  const basePage = asHost ? Math.round(pages * .62) : opts.page;
+  const offsets = [0, 22, 48, 76, 9, 60];
+  jam = {mode: "sim", code: "JAM-" + Math.random().toString(36).slice(2, 6).toUpperCase().padEnd(4, "X"), bookKey, pages, hostId, paused: false,
+    createdAt: Date.now() - (asHost ? 0 : 1260000),
+    cps: CHECKPOINTS.map(c => ({p: Math.round(c.p / 400 * pages), l: c.l, open: false})),
+    members: ids.map((id, i) => ({id, name: id === "me" ? me.name : PEOPLE[id].n, color: PEOPLE[id].c, online: true,
+      page: id === hostId ? basePage : Math.max(1, basePage - offsets[i] - (id === "me" && !asHost ? 40 : 0))}))};
+  jam.cps.forEach(c => { c.open = host().page >= c.p; });
+  setConn("", "Offline demo · simulated friends");
+  setupPanel(); openPanelAnim();
+  addMsg({sys: true, text: asHost ? `You started a Jam for “${book.t}”. Share code ${jam.code} to invite friends.` : `You joined ${host().name}'s Jam.`});
+  const others = () => jam.members.filter(m => m.id !== "me");
+  simTimers.push(setInterval(() => {
+    if (!jam || jam.paused) return;
+    jam.members.forEach(m => { if (m.id === "me") { if (isHost() && Math.random() > .6) m.page = Math.min(pages, m.page + 1); return; } if (Math.random() > .5) m.page = Math.min(pages, m.page + 1 + Math.floor(Math.random() * 2)); });
+    simCheckpoints(); renderAll();
+  }, 1600));
+  simTimers.push(setInterval(() => { const o = others(); const p = o[Math.floor(Math.random() * o.length)]; addMsg({from: p.id, name: p.name, page: p.page, text: LINES[Math.floor(Math.random() * LINES.length)]}); }, 3000));
+  simTimers.push(setInterval(() => { if (Math.random() > .3) floatEmoji(EMOJI[Math.floor(Math.random() * EMOJI.length)], true); }, 1300));
+}
+function simCheckpoints() {
+  const hp = host().page;
+  jam.cps.forEach(c => { if (!c.open && hp >= c.p) { c.open = true; addMsg({sys: true, text: `📍 Checkpoint reached: ${c.l}. Discussion is open!`}); } });
+}
+
+/* ---------- live mode (WebSocket to the mock server) ---------- */
+const net = {ws: null, connecting: null, wantCode: null};
+function netSend(o) { if (net.ws && net.ws.readyState === 1) { net.ws.send(JSON.stringify(o)); return true; } return false; }
+function netConnect() {
+  if (!NET_POSSIBLE) return Promise.reject(new Error("no server"));
+  if (net.ws && net.ws.readyState === 1) return Promise.resolve(net.ws);
+  if (net.connecting) return net.connecting;
+  net.connecting = new Promise((resolve, reject) => {
+    let settled = false;
+    const ws = new WebSocket((location.protocol === "https:" ? "wss://" : "ws://") + location.host + "/ws");
+    const t = setTimeout(() => { if (!settled) { settled = true; try { ws.close(); } catch (e) {} reject(new Error("timeout")); } }, 2500);
+    ws.onopen = () => { ws.send(JSON.stringify({type: "hello", id: me.id, name: me.name})); };
+    ws.onmessage = e => {
+      let m; try { m = JSON.parse(e.data); } catch (err) { return; }
+      if (m.type === "hello" && !settled) { settled = true; clearTimeout(t); net.ws = ws; resolve(ws); return; }
+      onNet(m);
+    };
+    ws.onerror = () => { if (!settled) { settled = true; clearTimeout(t); reject(new Error("ws error")); } };
+    ws.onclose = () => {
+      if (net.ws === ws) net.ws = null;
+      if (jam && jam.mode === "net") { setConn("warn", "Reconnecting…"); setTimeout(() => { if (jam && jam.mode === "net") netConnect().then(() => netSend({type: "join", code: jam.code})).catch(() => {}); }, 1500); }
+    };
+  }).finally(() => { net.connecting = null; });
+  return net.connecting;
+}
+function applyState(j) {
+  const first = !jam || jam.mode !== "net" || jam.code !== j.code;
+  if (first && jam) closePanel(true, true);
+  const prevOpen = first ? {} : Object.fromEntries(jam.cps.map(c => [c.l, c.el]));
+  jam = {mode: "net", code: j.code, bookKey: BOOKS[j.book] ? j.book : "women", pages: j.pages, hostId: j.hostId, paused: j.paused, createdAt: j.createdAt,
+    cps: j.cps.map(c => ({...c, el: prevOpen[c.l]})), members: j.members.map(m => ({...m, color: hashColor(m.id)}))};
+  setConn("live", `Live · ${jam.members.filter(m => !m.bot && m.online).length} connected`);
+  if (first) {
+    setupPanel(); openPanelAnim();
+    const link = `${location.pathname}?jam=${jam.code}` + (qs.get("name") ? `&name=${encodeURIComponent(qs.get("name"))}` : "");
+    history.replaceState(null, "", link);
+  } else renderAll();
+}
+function onNet(m) {
+  switch (m.type) {
+    case "state": applyState(m.jam); break;
+    case "history": if (jam) { $("#stream").innerHTML = ""; m.msgs.slice(-12).forEach(addMsg); } else net.pendingHistory = m.msgs; break;
+    case "msg": if (jam) addMsg(m.msg); break;
+    case "react": if (jam) floatEmoji(m.emoji, true); break;
+    case "bring":
+      if (!jam) break;
+      $("#bringWho").textContent = m.name; $("#bringPage").textContent = "p. " + m.page; $("#bringAccept").dataset.page = m.page;
+      $("#bringBanner").style.display = "flex";
+      if (hasGSAP && !reduce) gsap.fromTo("#bringBanner", {y: -10, opacity: 0}, {y: 0, opacity: 1, duration: .4, ease: "back.out(2)"});
+      break;
+    case "error": toast(m.message || "Something went wrong"); break;
+  }
+}
+async function startJam(bookKey) {
+  if (NET_POSSIBLE) {
+    try { await netConnect(); netSend({type: "create", book: bookKey || "women", bots: qs.get("bots") === "1"}); return; }
+    catch (e) { toast("Server not reachable, using offline demo"); }
+  }
+  openSim({mode: "host", book: bookKey || "women"});
+}
+async function joinByCode(code) {
+  code = String(code || "").trim().toUpperCase().replace(/\s+/g, "");
+  if (!code) return toast("Enter a jam code");
+  if (!code.startsWith("JAM-")) code = "JAM-" + code.replace(/^JAM/, "");
+  if (NET_POSSIBLE) {
+    try { await netConnect(); netSend({type: "join", code}); return; }
+    catch (e) { toast("Server not reachable, joining the offline demo"); }
+  }
+  openSim({mode: "join", ...JAMS[0]});
+}
+
+/* live jams on the homepage (server mode) */
+let liveIv = null;
+async function refreshLiveJams() {
+  if (!NET_POSSIBLE) return;
+  let list;
+  try { const r = await fetch("/api/jams", {cache: "no-store"}); if (!r.ok) return; list = await r.json(); } catch (e) { return; }
+  const shelfCard = $("#jamFromShelf") && $("#jamFromShelf").closest(".jamcard");
+  const cards = list.slice(0, 3).map(j => `<div class="card jamcard livejam">
+    ${cover(BOOKS[j.book] ? j.book : "women", 64, 96)}
+    <div class="info"><span class="live"><span class="dot"></span> Live · ${esc(j.code)}</span>
+      <h4>${esc(j.title)}</h4>
+      <div style="display:flex;align-items:center;gap:10px"><div class="stack">${j.members.slice(0, 4).map(m => avM({...m, color: hashColor(m.id)}, 26)).join("")}</div><span class="sub" style="font-size:12.5px">${esc(firstName(j.hostName))}'s jam · ${j.members.length} reading</span></div>
+      <div class="mini-track">${j.members.slice(0, 5).map(m => `<span style="left:${Math.min(97, m.page / j.pages * 100)}%;background:${hashColor(m.id)}"></span>`).join("")}</div>
+    </div><button class="btn dark joincode" data-code="${esc(j.code)}">Join</button></div>`).join("")
+    || `<div class="card jamcard livejam livejam-empty"><div class="info"><span class="live"><span class="dot"></span> Live server connected</span><h4>No one is jamming yet</h4><div class="sub" style="font-size:13px">Start a Jam, then share the link. Friends who open it land right in your session.</div></div></div>`;
+  $$("#jamList > .jamcard").forEach(c => { if (c !== shelfCard) c.remove(); });
+  shelfCard.insertAdjacentHTML("beforebegin", cards);
+  $$("#jamList .joincode").forEach(b => b.onclick = () => joinByCode(b.dataset.code));
+}
+
+/* ---------- controls ---------- */
+function myPageTo(p) {
+  const you = mine(); if (!you) return;
+  p = Math.max(1, Math.min(jam.pages, p));
+  if (jam.mode === "net") { you.page = p; renderAll(); netSend({type: "page", page: p}); }
+  else { you.page = p; simCheckpoints(); renderAll(); }
+}
+$("#syncBtn").onclick = () => {
+  if (!jam) return;
+  const hp = host().page;
+  if (isHost()) {
+    if (jam.mode === "net") { netSend({type: "bring"}); toast("Asked everyone to jump to your page"); }
+    else { jam.members.forEach(m => m.page = hp); addMsg({sys: true, text: `⟲ You brought everyone to page ${hp}.`}); renderAll(); }
+  } else { myPageTo(hp); if (jam.mode === "sim") addMsg({sys: true, text: `⟲ Synced to ${firstName(host().name)}'s page: p. ${hp}.`}); }
+  if (hasGSAP && !reduce) gsap.fromTo("#syncBtn", {scale: .94}, {scale: 1, duration: .6, ease: "elastic.out(1,.4)"});
+};
+$("#bringAccept").onclick = () => { myPageTo(+$("#bringAccept").dataset.page || host().page); $("#bringBanner").style.display = "none"; };
+$("#bringDismiss").onclick = () => { $("#bringBanner").style.display = "none"; };
+$("#turnBtn").onclick = () => { if (!jam) return; const you = mine(); if (jam.mode === "net") { you.page = Math.min(jam.pages, you.page + 1); renderAll(); netSend({type: "turn"}); } else myPageTo(you.page + 1); };
+$("#pauseBtn").onclick = () => {
+  if (!jam || !isHost()) return;
+  if (jam.mode === "net") netSend({type: "pause", paused: !jam.paused});
+  else { jam.paused = !jam.paused; addMsg({sys: true, text: jam.paused ? "❚❚ You paused the Jam for discussion." : "▶ Reading resumed."}); renderAll(); }
+};
+$("#botsToggle").onchange = e => { if (jam && jam.mode === "net") netSend({type: "bots", on: e.target.checked}); };
+$("#nameIn").addEventListener("change", e => {
+  const v = e.target.value.trim().slice(0, 30); if (!v) { e.target.value = me.name; return; }
+  me.name = v; sessionStorage.setItem("gr-name", v);
+  if (jam && jam.mode === "net") netSend({type: "rename", name: v});
+  else if (jam) { const y = mine(); if (y) y.name = v; renderAll(); }
+});
+$("#copyCode").onclick = () => {
+  if (!jam) return;
+  const link = shareLink(jam.code);
+  try { navigator.clipboard && navigator.clipboard.writeText(link).catch(() => {}); } catch (e) {}
+  toast(jam.mode === "net" ? "Invite link copied: " + link : "Invite link copied (demo)");
+};
+$$("#reacts button").forEach(b => b.addEventListener("click", () => {
+  for (let i = 0; i < 3; i++) setTimeout(() => floatEmoji(b.textContent, false), i * 120);
+  if (jam && jam.mode === "net") netSend({type: "react", emoji: b.textContent});
+  if (hasGSAP && !reduce) gsap.fromTo(b, {scale: 1.3}, {scale: 1, duration: .4, ease: "back.out(3)"});
+}));
+$("#compose").addEventListener("submit", e => {
+  e.preventDefault(); const v = $("#composeIn").value.trim(); if (!v || !jam) return;
+  if (jam.mode === "net") netSend({type: "chat", text: v});
+  else addMsg({from: "me", name: me.name, page: mine().page, text: v});
+  $("#composeIn").value = "";
+});
+$("#jamClose").onclick = () => closePanel(); $("#jamBackdrop").onclick = () => closePanel();
+document.addEventListener("keydown", e => { if (e.key === "Escape" && jam) closePanel(); });
+$("#startJam").onclick = () => startJam("women");
+$("#jamThis").onclick = () => startJam("women");
+$("#navJam").onclick = () => $("#jamSection").scrollIntoView({behavior: reduce ? "auto" : "smooth"});
+$("#enterCode").onclick = () => { $("#enterCode").style.display = "none"; $("#codeForm").classList.add("on"); $("#codeIn").focus(); };
+$("#codeForm").addEventListener("submit", e => { e.preventDefault(); joinByCode($("#codeIn").value); });
+$$(".join").forEach(b => b.onclick = () => NET_POSSIBLE ? toast("That one is sample data. Join a live jam or start your own") : openSim({mode: "join", ...JAMS[+b.dataset.idx]}));
+
+window.__proto = {startJam, joinByCode, closePanel, finishIntro, setPage: p => myPageTo(p), state: () => jam, me};
+
+if (NET_POSSIBLE) { refreshLiveJams(); liveIv = setInterval(() => { if (!panelOpen) refreshLiveJams(); }, 5000); }
+if (qs.get("jam")) { finishIntro(); joinByCode(qs.get("jam")); }
+else runIntro();
+})();
+</script>
+</body></html>
