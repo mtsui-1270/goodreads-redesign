@@ -12,21 +12,21 @@
 :root{
   /* Mariah's palette */
   --clockwork:#72583E; --cedar:#7C7960; --latte:#DBC4A5; --olive:#44422D; --noir:#443223; --mauve:#755151; --weathered:#A08670; --linen:#FFF9F3;
-  --cream:#CFB794; --paper:#DCC6A7; --card:#E4D0B4; --line:#C4A985;
+  --cream:#F3EADB; --paper:#DCC6A7; --card:#E4D0B4; --line:#C4A985;
   --terra:#755151; --terra-d:#5E3F3F; --terra-l:#D7BBAE;
   --brown:#443223; --brown-2:#5A4530; --muted:#5A4530;
   --wood-1:#72583E; --wood-2:#443223; --wood-3:#8C6E50;
   --gold:#72583E; --chip:#CDC4A4; --chip-fg:#44422D;
-  --shadow:0 1px 2px rgba(68,50,35,.10),0 10px 26px rgba(68,50,35,.14);
+  --shadow:0 1px 2px rgba(68,50,35,.10),0 12px 28px rgba(68,50,35,.16);
   --radius:20px;
   --serif:'Fraunces','Playfair Display',Georgia,serif;
   --sans:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;background:#CFB794}
-body{font-family:var(--sans);background:radial-gradient(120% 80% at 15% 0%,#D8C2A2 0%,transparent 60%),radial-gradient(90% 70% at 100% 100%,#BFA382 0%,transparent 65%),var(--cream);color:var(--brown);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+html{scroll-behavior:smooth;background:#F3EADB}
+body{font-family:var(--sans);background:radial-gradient(120% 80% at 15% 0%,#F8F1E6 0%,transparent 60%),radial-gradient(90% 70% at 100% 100%,#EBDDC6 0%,transparent 65%),var(--cream);color:var(--brown);-webkit-font-smoothing:antialiased;overflow-x:hidden}
 body{position:relative}
-body::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.35;mix-blend-mode:multiply;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .27 0 0 0 0 .2 0 0 0 0 .14 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+body::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.22;mix-blend-mode:multiply;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .27 0 0 0 0 .2 0 0 0 0 .14 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
 body.locked{overflow:hidden}
 button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
 h1,h2,h3,.serif{font-family:var(--serif);font-weight:500;letter-spacing:-.01em}
@@ -61,7 +61,7 @@ h1,h2,h3,.serif{font-family:var(--serif);font-weight:500;letter-spacing:-.01em}
 .skip{position:absolute;right:24px;bottom:24px;z-index:3;color:#DBC4A5;border:1px solid rgba(219,196,165,.35);padding:8px 16px;border-radius:999px;font-size:13px;backdrop-filter:blur(6px)}
 .skip:hover{background:rgba(255,249,243,.08)}
 .app{position:relative;z-index:1;max-width:1240px;margin:0 auto;padding:0 28px 80px}
-nav.top{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:28px;padding:18px 0;background:linear-gradient(rgba(207,183,148,.96) 70%,rgba(207,183,148,0));backdrop-filter:blur(2px)}
+nav.top{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:28px;padding:18px 0;background:linear-gradient(rgba(243,234,219,.96) 70%,rgba(243,234,219,0));backdrop-filter:blur(2px)}
 .wordmark{font-family:var(--serif);font-size:30px;font-weight:400;letter-spacing:-.03em;color:var(--brown);display:flex;align-items:center;gap:10px}
 .wordmark .mk{width:34px;height:34px;border-radius:10px;background:var(--terra);display:grid;place-items:center;color:var(--linen);font-size:18px;font-weight:600}
 .search{flex:1;max-width:440px;display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:11px 18px;box-shadow:var(--shadow);transition:box-shadow .25s,border-color .25s}
